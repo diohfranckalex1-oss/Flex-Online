@@ -1,0 +1,11 @@
+{
+  "name": "Flex Online",
+  "description": "Plateforme sociale et de messagerie instantanée en temps réel : comptes utilisateurs personnalisés, discussions privées et de groupe, fil d'actualités, stories, notes vocales et appels.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
