@@ -163,7 +163,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
 
                 <div className="bg-neutral-950/60 p-3.5 rounded-2xl border border-neutral-800 space-y-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                    <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                       1
                     </div>
                     <div className="pt-0.5">
@@ -172,20 +172,20 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                    <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                       2
                     </div>
                     <div className="pt-0.5">
                       Cliquez sur la petite icône avec un écran et une flèche :{' '}
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-neutral-800 text-emerald-300 rounded font-semibold border border-neutral-700">
-                        <Download className="w-3 h-3 text-emerald-400" />
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-neutral-800 text-violet-300 rounded font-semibold border border-neutral-700">
+                        <Download className="w-3 h-3 text-violet-400" />
                         Installer Flex Online
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                    <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                       3
                     </div>
                     <div className="pt-0.5">
@@ -204,34 +204,34 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
             {activeTab === 'mobile' && (
               <div className="space-y-3 text-xs text-neutral-300 bg-neutral-950/60 p-4 rounded-2xl border border-neutral-800 mb-5">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                  <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                     1
                   </div>
                   <div className="pt-0.5">
                     Sur <strong>iPhone / iPad</strong> : appuyez sur le bouton <strong>Partager</strong>{' '}
-                    <Share2 className="w-3.5 h-3.5 inline text-indigo-400 ml-0.5" /> dans la barre Safari.
+                    <Share2 className="w-3.5 h-3.5 inline text-violet-400 ml-0.5" /> dans la barre Safari (en bas ou en haut).
                     <br />
-                    Sur <strong>Android</strong> : appuyez sur les <strong>3 points (⋮)</strong> en haut à droite de Chrome.
+                    Sur <strong>Android</strong> : appuyez sur les <strong>3 points (⋮)</strong> en haut à droite de Google Chrome.
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                  <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                     2
                   </div>
                   <div className="pt-0.5">
                     Faites défiler vers le bas et appuyez sur{' '}
                     <strong className="text-white">« Sur l'écran d'accueil »</strong> ou <strong className="text-white">« Installer l'application »</strong>{' '}
-                    <PlusSquare className="w-3.5 h-3.5 inline text-indigo-400 ml-0.5" />.
+                    <PlusSquare className="w-3.5 h-3.5 inline text-violet-400 ml-0.5" />.
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                  <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                     3
                   </div>
                   <div className="pt-0.5">
-                    Appuyez sur <strong>Ajouter</strong>. L'icône Flex Online apparaîtra sur votre écran d'accueil comme une application native !
+                    Appuyez sur <strong>Ajouter</strong> (ou Installer). Le logo violet Flex Online apparaîtra directement sur l'écran d'accueil de votre téléphone comme une véritable application mobile !
                   </div>
                 </div>
               </div>
@@ -247,7 +247,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
               {activeTab === 'pc' && (
                 <button
                   onClick={handleOpenInNewTab}
-                  className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 py-2.5 text-xs font-bold text-white hover:bg-emerald-500 transition"
+                  className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-violet-600 py-2.5 text-xs font-bold text-white hover:bg-violet-500 transition shadow-md shadow-violet-900/40"
                 >
                   <span>Ouvrir en grand</span>
                   <ArrowRight className="w-3.5 h-3.5" />

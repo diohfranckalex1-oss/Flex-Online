@@ -1,11 +1,36 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="flexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#8b5cf6" />
-      <stop offset="100%" stop-color="#6d28d9" />
+    <linearGradient id="violetBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#9333ea" />
+      <stop offset="50%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#4c1d95" />
     </linearGradient>
+    <linearGradient id="glossGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f3e8ff" />
+      <stop offset="100%" stop-color="#c084fc" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#3b0764" flood-opacity="0.5" />
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="112" fill="url(#flexGrad)" />
-  <path d="M140 130 h210 c14 0 24 10 24 24 v20 c0 14 -10 24 -24 24 H210 v70 h120 c14 0 24 10 24 24 v20 c0 14 -10 24 -24 24 H210 v110 c0 14 -10 24 -24 24 h-22 c-14 0 -24 -10 -24 -24 V154 c0 -14 10 -24 24 -24 z" fill="#ffffff" />
-  <circle cx="390" cy="380" r="44" fill="#a855f7" stroke="#4c1d95" stroke-width="12" />
+
+  <!-- Background Squircle with Royal Violet Gradient -->
+  <rect width="512" height="512" rx="120" fill="url(#violetBg)" />
+
+  <!-- Glossy top reflection curve -->
+  <path d="M 0,120 C 0,53.7 53.7,0 120,0 L 392,0 C 458.3,0 512,53.7 512,120 L 512,240 C 360,200 150,220 0,300 Z" fill="url(#glossGrad)" />
+
+  <!-- Modern Dynamic "F" Monogram -->
+  <g filter="url(#shadow)">
+    <!-- Vertical and top bar of F -->
+    <path d="M 148,124 C 148,110.7 158.7,100 172,100 L 344,100 C 357.3,100 368,110.7 368,124 C 368,137.3 357.3,148 344,148 L 216,148 L 216,220 L 320,220 C 333.3,220 344,230.7 344,244 C 344,257.3 333.3,268 320,268 L 216,268 L 216,388 C 216,401.3 205.3,412 192,412 C 178.7,412 148,401.3 148,388 Z" fill="#ffffff" />
+    <!-- Dynamic Glowing Connection Node -->
+    <circle cx="376" cy="360" r="42" fill="#c084fc" stroke="#ffffff" stroke-width="10" />
+    <!-- Wave Accent -->
+    <path d="M 288,360 C 288,310 326,272 376,272" stroke="url(#accentGrad)" stroke-width="20" stroke-linecap="round" fill="none" />
+  </g>
 </svg>
