@@ -1,5 +1,16 @@
 export type UserStatus = 'online' | 'offline' | 'away' | 'busy';
 
+export interface LinkedDevice {
+  id: string;
+  name: string;
+  type: 'pc' | 'mobile' | 'web';
+  os: string;
+  browser?: string;
+  lastActive: string;
+  ip?: string;
+  status: 'active' | 'revoked';
+}
+
 export interface User {
   id: string;
   name: string;
@@ -7,12 +18,24 @@ export interface User {
   avatar: string;
   bio?: string;
   phone?: string;
+  email?: string;
+  backupPhone?: string;
   status: UserStatus;
   lastSeen?: string;
   verified?: boolean;
   securityPin?: string;
   recoveryKey?: string;
+  linkedDevices?: LinkedDevice[];
+  fontSizePreference?: 'normal' | 'large' | 'xlarge';
   createdAt?: string;
+}
+
+export interface VerificationCode {
+  target: string;
+  code: string;
+  type: 'phone_otp' | 'email_otp' | 'recovery';
+  createdAt: string;
+  expiresAt: string;
 }
 
 export type MessageType = 'text' | 'image' | 'voice' | 'file';
@@ -51,6 +74,7 @@ export interface Conversation {
   updatedAt: string;
   description?: string;
   pinned?: boolean;
+  muted?: boolean;
 }
 
 export type PostReactionType = 'like' | 'love' | 'care' | 'haha' | 'wow' | 'sad' | 'angry';
@@ -110,6 +134,17 @@ export interface CallSession {
   duration?: number;
 }
 
+export interface PhoneContact {
+  id: string;
+  name: string;
+  tel: string;
+  email?: string;
+  avatar?: string;
+  isRegisteredUser?: boolean;
+  matchedUserId?: string;
+  dateSynced: string;
+}
+
 export interface CallLog {
   id: string;
   contact: User;
@@ -118,3 +153,14 @@ export interface CallLog {
   timestamp: string;
   duration?: string;
 }
+
+export type ThemeMode = 'dark' | 'light';
+
+export interface ChatWallpaper {
+  id: string;
+  name: string;
+  type: 'color' | 'gradient' | 'image';
+  value: string;
+  previewColor?: string;
+}
+

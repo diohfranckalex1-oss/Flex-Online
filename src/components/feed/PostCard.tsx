@@ -9,7 +9,8 @@ import {
   Sparkles, 
   Send, 
   Heart,
-  Check
+  Check,
+  Trash2
 } from 'lucide-react';
 import { Post, PostReactionType } from '../../types';
 import { useApp } from '../../context/AppContext';
@@ -22,19 +23,28 @@ const REACTION_CONFIG: Record<
   PostReactionType,
   { label: string; icon: string; color: string }
 > = {
-  like: { label: "J'aime", icon: '👍', color: 'text-blue-600' },
+  like: { label: "J'aime", icon: '👍', color: 'text-cyan-400' },
   love: { label: "J'adore", icon: '❤️', color: 'text-rose-500' },
-  care: { label: 'Solidaire', icon: '🤗', color: 'text-amber-500' },
-  haha: { label: 'Haha', icon: '😂', color: 'text-yellow-500' },
-  wow: { label: 'Wouah', icon: '😮', color: 'text-yellow-500' },
-  sad: { label: 'Triste', icon: '😢', color: 'text-amber-600' },
-  angry: { label: 'Grrr', icon: '😡', color: 'text-red-600' },
+  care: { label: 'Solidaire', icon: '🤗', color: 'text-amber-400' },
+  haha: { label: 'Haha', icon: '😂', color: 'text-yellow-400' },
+  wow: { label: 'Wouah', icon: '😮', color: 'text-yellow-400' },
+  sad: { label: 'Triste', icon: '😢', color: 'text-amber-500' },
+  angry: { label: 'Grrr', icon: '😡', color: 'text-rose-500' },
 };
 
 export const PostCard: React.FC<PostCardProps> = ({ post }) => {
-  const { currentUser, togglePostReaction, addPostComment, likePostComment } = useApp();
+  const { 
+    currentUser, 
+    togglePostReaction, 
+    addPostComment, 
+    deletePostComment,
+    likePostComment,
+    deletePost,
+    sharePost
+  } = useApp();
   const [showReactionFlyout, setShowReactionFlyout] = useState(false);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(true);
+  const [showMenu, setShowMenu] = useState(false);
   const [commentInput, setCommentInput] = useState('');
   const [copiedShare, setCopiedShare] = useState(false);
 
@@ -65,124 +75,189 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
     setShowComments(true);
   };
 
-  const handleShare = () => {
-    navigator.clipboard?.writeText(window.location.href);
+  const handleInsertEmoji = (emoji: string) => {
+    setCommentInput((prev) => prev + emoji);
+  };
+
+  const handleCopyShare = () => {
+    sharePost(post.id);
+    navigator.clipboard?.writeText?.(window.location.href);
     setCopiedShare(true);
     setTimeout(() => setCopiedShare(false), 2000);
   };
 
-  const formatRelativeTime = (isoString: string) => {
-    const diffMs = Date.now() - new Date(isoString).getTime();
-    const diffMin = Math.floor(diffMs / 60000);
-    if (diffMin < 1) return 'À l’instant';
-    if (diffMin < 60) return `Il y a ${diffMin} min`;
-    const diffHours = Math.floor(diffMin / 60);
-    if (diffHours < 24) return `Il y a ${diffHours} h`;
-    return new Date(isoString).toLocaleDateString([], { day: 'numeric', month: 'short' });
+  const formatPostTime = (isoString: string) => {
+    const d = new Date(isoString);
+    const now = new Date();
+    const diffSec = Math.floor((now.getTime() - d.getTime()) / 1000);
+    if (diffSec < 60) return "À l'instant";
+    if (diffSec < 3600) return `Il y a ${Math.floor(diffSec / 60)} min`;
+    if (diffSec < 86400) return `Il y a ${Math.floor(diffSec / 3600)} h`;
+    return d.toLocaleDateString([], { day: 'numeric', month: 'short' });
   };
 
+  const isAuthor = post.authorId === currentUser.id;
+
   return (
-    <div id={`post-${post.id}`} className="bg-white rounded-2xl shadow-xs border border-neutral-200/80 mb-4 overflow-hidden">
+    <article
+      id={`post-card-${post.id}`}
+      className="bg-neutral-900 rounded-2xl shadow-xl border border-neutral-800 overflow-hidden text-neutral-100 transition-all hover:border-neutral-700/80"
+    >
       {/* Post Header */}
-      <div className="p-4 pb-3 flex items-center justify-between">
+      <div className="p-4 pb-3 flex items-center justify-between relative">
         <div className="flex items-center gap-3">
           <img
             src={post.authorAvatar}
             alt={post.authorName}
-            className="w-10 h-10 rounded-full object-cover border border-neutral-200"
+            className="w-10 h-10 rounded-2xl object-cover ring-1 ring-indigo-500/40"
           />
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="font-bold text-sm text-neutral-900 leading-tight">
-                {post.authorName}
-              </span>
+              <h4 className="text-sm font-black text-white">{post.authorName}</h4>
               {post.authorVerified && (
-                <Sparkles className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
+                <span className="text-[10px] bg-cyan-400/20 text-cyan-300 px-1.5 py-0.2 rounded-md font-bold">
+                  ✓
+                </span>
               )}
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-neutral-500 mt-0.5">
-              <span>{formatRelativeTime(post.timestamp)}</span>
+            <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 font-medium">
+              <span>{formatPostTime(post.timestamp)}</span>
               <span>•</span>
               {post.privacy === 'public' ? (
-                <Globe className="w-3 h-3 text-neutral-400" />
+                <span className="flex items-center gap-1 text-cyan-400">
+                  <Globe className="w-3 h-3 inline" /> Public
+                </span>
               ) : (
-                <Users className="w-3 h-3 text-neutral-400" />
+                <span className="flex items-center gap-1 text-indigo-400">
+                  <Users className="w-3 h-3 inline" /> Amis
+                </span>
               )}
             </div>
           </div>
         </div>
 
-        <button className="p-1.5 text-neutral-400 hover:text-neutral-700 rounded-full hover:bg-neutral-100 transition-colors">
-          <MoreHorizontal className="w-5 h-5" />
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setShowMenu(!showMenu)}
+            className="p-1.5 rounded-xl text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+          >
+            <MoreHorizontal className="w-4 h-4" />
+          </button>
+
+          {showMenu && (
+            <div className="absolute right-0 top-full mt-1 w-44 bg-neutral-800 border border-neutral-700 rounded-xl shadow-2xl py-1 z-30 animate-scale-in text-xs font-semibold">
+              <button
+                onClick={() => {
+                  handleCopyShare();
+                  setShowMenu(false);
+                }}
+                className="w-full px-3 py-2 text-left hover:bg-neutral-700 flex items-center gap-2 text-neutral-200"
+              >
+                <Share2 className="w-3.5 h-3.5 text-cyan-400" />
+                <span>Copier le lien</span>
+              </button>
+              {isAuthor && (
+                <button
+                  onClick={() => {
+                    deletePost(post.id);
+                    setShowMenu(false);
+                  }}
+                  className="w-full px-3 py-2 text-left hover:bg-rose-950/60 flex items-center gap-2 text-rose-400"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>Supprimer le post</span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
 
-      {/* Post Text */}
+      {/* Post Body Content */}
       <div className="px-4 pb-3">
-        <p className="text-sm sm:text-base text-neutral-900 leading-relaxed whitespace-pre-line">
+        <p className="text-sm text-neutral-100 leading-relaxed whitespace-pre-wrap">
           {post.content}
         </p>
       </div>
 
-      {/* Attached Media */}
+      {/* Post Media if any */}
       {post.mediaUrl && (
-        <div className="w-full bg-neutral-100 max-h-[500px] overflow-hidden flex items-center justify-center">
+        <div className="relative bg-neutral-950 max-h-[500px] overflow-hidden">
           <img
             src={post.mediaUrl}
-            alt="Contenu multimédia"
-            className="w-full h-auto max-h-[500px] object-cover"
+            alt="Publication"
+            className="w-full h-full object-cover"
           />
         </div>
       )}
 
-      {/* Reaction & Comments stats summary */}
-      <div className="px-4 py-2 border-b border-neutral-100 flex items-center justify-between text-xs text-neutral-500">
+      {/* Reactions Summary Bar */}
+      <div className="px-4 py-2 flex items-center justify-between text-xs text-neutral-400 border-b border-neutral-800/80">
         <div className="flex items-center gap-1.5">
-          {post.reactions.length > 0 && (
-            <div className="flex items-center -space-x-1">
+          {uniqueReactionTypes.length > 0 && (
+            <div className="flex -space-x-1">
               {uniqueReactionTypes.map((type) => (
                 <span
                   key={type}
-                  className="w-5 h-5 rounded-full bg-neutral-50 flex items-center justify-center text-xs shadow-2xs"
+                  className="w-5 h-5 rounded-full bg-neutral-800 flex items-center justify-center text-xs shadow-xs ring-1 ring-neutral-900"
                 >
-                  {REACTION_CONFIG[type].icon}
+                  {REACTION_CONFIG[type]?.icon || '👍'}
                 </span>
               ))}
             </div>
           )}
-          <span className="font-medium">
-            {post.reactions.length > 0 ? post.reactions.length : ''}
-          </span>
+          <span>{post.reactions.length} réaction{post.reactions.length > 1 ? 's' : ''}</span>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={() => setShowComments(!showComments)}
-            className="hover:underline font-medium"
+            className="hover:text-cyan-400 transition-colors font-medium"
           >
             {post.comments.length} commentaire{post.comments.length > 1 ? 's' : ''}
           </button>
           <span>•</span>
-          <span className="font-medium">{post.sharesCount} partages</span>
+          <span>{post.sharesCount} partage{post.sharesCount > 1 ? 's' : ''}</span>
         </div>
       </div>
 
-      {/* Action Buttons Bar */}
-      <div className="px-2 py-1 flex items-center justify-around border-b border-neutral-100 relative">
-        {/* Like button with hover popup */}
+      {/* Reaction Actions Toolbar */}
+      <div className="px-2 py-1 flex items-center justify-around relative">
+        {/* Like Button with hover flyout */}
         <div
           className="relative flex-1"
           onMouseEnter={() => setShowReactionFlyout(true)}
           onMouseLeave={() => setShowReactionFlyout(false)}
         >
-          {/* Reaction Flyout Popup */}
+          <button
+            onClick={handleToggleDefaultLike}
+            className={`w-full py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-colors ${
+              userReaction
+                ? `${REACTION_CONFIG[userReaction.type]?.color || 'text-cyan-400'} bg-neutral-800/80`
+                : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50'
+            }`}
+          >
+            {userReaction ? (
+              <>
+                <span className="text-base">{REACTION_CONFIG[userReaction.type]?.icon}</span>
+                <span>{REACTION_CONFIG[userReaction.type]?.label}</span>
+              </>
+            ) : (
+              <>
+                <ThumbsUp className="w-4 h-4" />
+                <span>J'aime</span>
+              </>
+            )}
+          </button>
+
+          {/* Facebook-style floating reaction icons popup */}
           {showReactionFlyout && (
-            <div className="absolute -top-12 left-2 z-30 bg-white rounded-full shadow-xl border border-neutral-200 px-3 py-1.5 flex items-center gap-2 animate-bounce-short">
+            <div className="absolute bottom-full left-2 mb-1 bg-neutral-800 border border-neutral-700 rounded-full px-2 py-1.5 shadow-2xl flex items-center gap-1.5 z-30 animate-scale-in">
               {(Object.keys(REACTION_CONFIG) as PostReactionType[]).map((type) => (
                 <button
                   key={type}
                   onClick={() => handleSelectReaction(type)}
-                  className="text-2xl hover:scale-130 transition-transform duration-150 relative group/icon"
+                  className="hover:scale-130 transition-transform p-1 text-lg"
                   title={REACTION_CONFIG[type].label}
                 >
                   {REACTION_CONFIG[type].icon}
@@ -190,45 +265,26 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
               ))}
             </div>
           )}
-
-          <button
-            id={`btn-like-post-${post.id}`}
-            onClick={handleToggleDefaultLike}
-            className={`w-full py-2 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold transition-colors hover:bg-neutral-100 ${
-              userReaction
-                ? REACTION_CONFIG[userReaction.type].color
-                : 'text-neutral-600'
-            }`}
-          >
-            {userReaction ? (
-              <span className="text-base">{REACTION_CONFIG[userReaction.type].icon}</span>
-            ) : (
-              <ThumbsUp className="w-4 h-4" />
-            )}
-            <span>{userReaction ? REACTION_CONFIG[userReaction.type].label : "J'aime"}</span>
-          </button>
         </div>
 
-        {/* Comment button */}
+        {/* Comment Button */}
         <button
-          id={`btn-comment-post-${post.id}`}
-          onClick={() => setShowComments(!showComments)}
-          className="flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-neutral-600 hover:bg-neutral-100 transition-colors"
+          onClick={() => setShowComments(true)}
+          className="flex-1 py-2 rounded-xl text-xs font-bold text-neutral-400 hover:text-white hover:bg-neutral-800/50 flex items-center justify-center gap-2 transition-colors"
         >
-          <MessageCircle className="w-4 h-4" />
+          <MessageCircle className="w-4 h-4 text-cyan-400" />
           <span>Commenter</span>
         </button>
 
-        {/* Share button */}
+        {/* Share Button */}
         <button
-          id={`btn-share-post-${post.id}`}
-          onClick={handleShare}
-          className="flex-1 py-2 rounded-xl flex items-center justify-center gap-2 text-xs sm:text-sm font-semibold text-neutral-600 hover:bg-neutral-100 transition-colors"
+          onClick={handleCopyShare}
+          className="flex-1 py-2 rounded-xl text-xs font-bold text-neutral-400 hover:text-white hover:bg-neutral-800/50 flex items-center justify-center gap-2 transition-colors"
         >
           {copiedShare ? (
             <>
-              <Check className="w-4 h-4 text-emerald-600" />
-              <span className="text-emerald-600">Lien copié !</span>
+              <Check className="w-4 h-4 text-cyan-400" />
+              <span className="text-cyan-400 font-bold">Partagé !</span>
             </>
           ) : (
             <>
@@ -239,49 +295,99 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
         </button>
       </div>
 
-      {/* Comments Section */}
+      {/* Comments Section - Always clean, immediate and problem-free */}
       {showComments && (
-        <div className="p-4 bg-neutral-50/50 space-y-3">
-          {/* List of comments */}
+        <div className="px-4 py-3 bg-neutral-950/70 border-t border-neutral-800/80 space-y-3">
+          {/* Quick Comment Input */}
+          <form onSubmit={handleAddComment} className="flex items-center gap-2">
+            <img
+              src={currentUser.avatar}
+              alt={currentUser.name}
+              className="w-8 h-8 rounded-full object-cover ring-1 ring-cyan-500/40 shrink-0"
+            />
+            <div className="flex-1 relative flex items-center">
+              <input
+                type="text"
+                placeholder="Écrire un commentaire public..."
+                value={commentInput}
+                onChange={(e) => setCommentInput(e.target.value)}
+                className="w-full pl-3 pr-20 py-2 bg-neutral-900 border border-neutral-800 rounded-xl text-xs text-neutral-100 placeholder-neutral-500 focus:outline-hidden focus:border-cyan-400 transition-colors"
+              />
+              
+              {/* Quick Emojis & Send Button */}
+              <div className="absolute right-1.5 flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={() => handleInsertEmoji('❤️')}
+                  className="hover:scale-120 transition-transform text-xs"
+                  title="Ajouter ❤️"
+                >
+                  ❤️
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleInsertEmoji('🔥')}
+                  className="hover:scale-120 transition-transform text-xs"
+                  title="Ajouter 🔥"
+                >
+                  🔥
+                </button>
+                <button
+                  type="submit"
+                  disabled={!commentInput.trim()}
+                  className="p-1 rounded-lg text-cyan-400 hover:text-cyan-300 disabled:text-neutral-600 disabled:hover:text-neutral-600 transition-colors"
+                  title="Publier le commentaire"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </form>
+
+          {/* Comments List */}
           {post.comments.length > 0 && (
-            <div className="space-y-2.5 mb-3">
+            <div className="space-y-2.5 max-h-72 overflow-y-auto pt-1 pr-1">
               {post.comments.map((comment) => {
-                const hasLiked = comment.likes.includes(currentUser.id);
+                const isCommentAuthor = comment.authorId === currentUser.id;
+
                 return (
-                  <div key={comment.id} className="flex gap-2.5 items-start">
+                  <div key={comment.id} className="flex items-start gap-2.5 text-xs group">
                     <img
                       src={comment.authorAvatar}
                       alt={comment.authorName}
-                      className="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5"
+                      className="w-7 h-7 rounded-full object-cover shrink-0 mt-0.5"
                     />
-                    <div className="flex-1">
-                      <div className="bg-neutral-100 rounded-2xl px-3 py-2 inline-block max-w-full">
-                        <span className="text-xs font-bold text-neutral-900 block leading-tight">
-                          {comment.authorName}
-                        </span>
-                        <p className="text-xs text-neutral-800 mt-0.5 leading-relaxed break-words">
-                          {comment.content}
-                        </p>
+                    <div className="flex-1 min-w-0">
+                      <div className="bg-neutral-900 border border-neutral-800/80 p-2.5 rounded-2xl rounded-tl-xs">
+                        <div className="flex items-center justify-between mb-0.5">
+                          <p className="font-bold text-white">{comment.authorName}</p>
+                          {isCommentAuthor && (
+                            <button
+                              onClick={() => deletePostComment(post.id, comment.id)}
+                              className="opacity-0 group-hover:opacity-100 text-neutral-500 hover:text-rose-400 transition-opacity p-0.5"
+                              title="Supprimer mon commentaire"
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          )}
+                        </div>
+                        <p className="text-neutral-200 leading-relaxed break-words">{comment.content}</p>
                       </div>
-
-                      <div className="flex items-center gap-3 mt-1 ml-2 text-[11px] text-neutral-500 font-medium">
+                      
+                      <div className="flex items-center gap-3 text-[10px] text-neutral-500 ml-2 mt-1 font-semibold">
                         <button
                           onClick={() => likePostComment(post.id, comment.id)}
-                          className={`hover:underline ${hasLiked ? 'text-emerald-600 font-bold' : ''}`}
+                          className={`hover:underline flex items-center gap-1 ${
+                            comment.likes.includes(currentUser.id) ? 'text-cyan-400 font-bold' : ''
+                          }`}
                         >
-                          J'aime
+                          <span>J'aime</span>
+                          {comment.likes.length > 0 && <span>({comment.likes.length})</span>}
                         </button>
                         <span>•</span>
-                        <span>{formatRelativeTime(comment.timestamp)}</span>
-                        {comment.likes.length > 0 && (
-                          <>
-                            <span>•</span>
-                            <span className="flex items-center gap-0.5 text-neutral-600">
-                              <Heart className="w-3 h-3 fill-rose-500 text-rose-500" />
-                              {comment.likes.length}
-                            </span>
-                          </>
-                        )}
+                        <span className="text-neutral-400 font-normal">
+                          {formatPostTime(comment.timestamp)}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -289,34 +395,8 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
               })}
             </div>
           )}
-
-          {/* Add comment input */}
-          <form onSubmit={handleAddComment} className="flex items-center gap-2">
-            <img
-              src={currentUser.avatar}
-              alt={currentUser.name}
-              className="w-8 h-8 rounded-full object-cover shrink-0"
-            />
-            <div className="flex-1 relative">
-              <input
-                type="text"
-                placeholder="Écrivez un commentaire..."
-                value={commentInput}
-                onChange={(e) => setCommentInput(e.target.value)}
-                className="w-full px-3.5 py-2 pr-10 text-xs sm:text-sm bg-neutral-100 border border-neutral-200 rounded-full focus:bg-white focus:border-emerald-500 focus:outline-hidden"
-              />
-              {commentInput.trim() && (
-                <button
-                  type="submit"
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-emerald-600 hover:text-emerald-700"
-                >
-                  <Send className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          </form>
         </div>
       )}
-    </div>
+    </article>
   );
 };

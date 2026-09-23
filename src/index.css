@@ -1,15 +1,48 @@
 @import "tailwindcss";
 
 @layer base {
+  html, body, #root {
+    height: 100%;
+    height: 100dvh;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-overscroll-behavior: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
   body {
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 15px;
+    font-weight: 450;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    user-select: none;
+    -webkit-user-select: none;
+    background-color: #0c0f12;
+    color: #f1f5f9;
+  }
+
+  /* Critical for mobile: prevent auto-zoom in mobile Safari / Chrome when focusing inputs */
+  input, textarea, select {
+    font-size: 16px !important;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* Smooth button active feedback on mobile without blue overlay */
+  button, a {
+    touch-action: manipulation;
   }
 }
 
-/* Custom sleek scrollbar */
+/* Custom clean scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -17,11 +50,188 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.4);
+  background: rgba(148, 163, 184, 0.25);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(107, 114, 128, 0.6);
+  background: rgba(148, 163, 184, 0.45);
 }
+
+/* Light Theme Overrides (Teint Blanc Lumineux - Écritures Parfaitement Lisibles et Nettes) */
+html.light-theme body {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+html.light-theme .bg-neutral-950 {
+  background-color: #f8fafc !important;
+}
+
+html.light-theme .bg-neutral-950\/80,
+html.light-theme .bg-neutral-950\/70,
+html.light-theme .bg-neutral-950\/60 {
+  background-color: #ffffff !important;
+}
+
+html.light-theme .bg-neutral-900,
+html.light-theme .bg-neutral-900\/95,
+html.light-theme .bg-neutral-900\/90,
+html.light-theme .bg-neutral-900\/80 {
+  background-color: #ffffff !important;
+}
+
+html.light-theme .bg-neutral-800 {
+  background-color: #f1f5f9 !important;
+}
+
+html.light-theme .bg-neutral-800\/60,
+html.light-theme .bg-neutral-800\/50,
+html.light-theme .bg-neutral-800\/80,
+html.light-theme .bg-neutral-800\/40 {
+  background-color: #f1f5f9 !important;
+}
+
+html.light-theme .border-neutral-800,
+html.light-theme .border-neutral-800\/80,
+html.light-theme .border-neutral-800\/60,
+html.light-theme .border-neutral-800\/50,
+html.light-theme .border-neutral-800\/40,
+html.light-theme .border-violet-950\/40,
+html.light-theme .border-violet-950\/60,
+html.light-theme .border-violet-950\/80 {
+  border-color: #e2e8f0 !important;
+}
+
+html.light-theme .border-neutral-700,
+html.light-theme .border-neutral-700\/80 {
+  border-color: #cbd5e1 !important;
+}
+
+/* Base Light Theme Typography: High contrast, deep legible slate & rich black */
+html.light-theme .text-neutral-100,
+html.light-theme .text-neutral-200 {
+  color: #0f172a !important;
+}
+
+html.light-theme .text-neutral-300 {
+  color: #1e293b !important;
+}
+
+html.light-theme .text-neutral-400 {
+  color: #475569 !important;
+}
+
+html.light-theme .text-neutral-500 {
+  color: #64748b !important;
+}
+
+/* Headings and labels in light mode */
+html.light-theme h1.text-white,
+html.light-theme h2.text-white,
+html.light-theme h3.text-white,
+html.light-theme h4.text-white,
+html.light-theme span.text-white:not([class*="bg-"]):not(button *):not(.badge) {
+  color: #0f172a !important;
+}
+
+/* KEEP PURE WHITE TEXT ON ALL SOLID BUTTONS, BADGES, AND ACCENT BANNERS */
+html.light-theme button[class*="bg-violet-"],
+html.light-theme button[class*="bg-emerald-"],
+html.light-theme button[class*="bg-rose-"],
+html.light-theme button[class*="bg-indigo-"],
+html.light-theme button[class*="bg-cyan-"],
+html.light-theme .bg-violet-600,
+html.light-theme .bg-violet-700,
+html.light-theme .bg-emerald-600,
+html.light-theme .bg-emerald-500,
+html.light-theme .bg-rose-600,
+html.light-theme .bg-rose-500,
+html.light-theme .bg-indigo-600,
+html.light-theme .bg-cyan-600 {
+  color: #ffffff !important;
+}
+
+html.light-theme .bg-violet-600 *,
+html.light-theme .bg-violet-700 *,
+html.light-theme .bg-emerald-600 *,
+html.light-theme .bg-rose-600 *,
+html.light-theme .bg-rose-500 * {
+  color: #ffffff !important;
+}
+
+/* User Sent Message Bubble (Violet) - Bright, crystal-clear white text */
+html.light-theme .bg-violet-700 {
+  background-color: #6d28d9 !important;
+  color: #ffffff !important;
+}
+html.light-theme .bg-violet-700 p,
+html.light-theme .bg-violet-700 span,
+html.light-theme .bg-violet-700 .text-white {
+  color: #ffffff !important;
+}
+html.light-theme .bg-violet-700 .text-violet-200,
+html.light-theme .bg-violet-700 .text-violet-300,
+html.light-theme .bg-violet-700 .text-violet-200\/90,
+html.light-theme .bg-violet-700 .text-violet-200\/80 {
+  color: #ede9fe !important;
+}
+
+/* Received Message Bubble - Crisp pure white bubble with delicate border & rich dark text */
+html.light-theme .bg-neutral-800.text-neutral-100 {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+}
+html.light-theme .bg-neutral-800.text-neutral-100 p {
+  color: #0f172a !important;
+  font-weight: 500 !important;
+}
+html.light-theme .bg-neutral-800.text-neutral-100 .text-neutral-400 {
+  color: #64748b !important;
+}
+
+/* Input Fields & Textareas: Pristine white background, dark text, sharp placeholder */
+html.light-theme input,
+html.light-theme textarea,
+html.light-theme select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html.light-theme input::placeholder,
+html.light-theme textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Bottom Chat Input Capsule */
+html.light-theme .bg-neutral-950:has(input[placeholder*="Message"]) {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+}
+html.light-theme input[placeholder*="Message"] {
+  background-color: transparent !important;
+  color: #0f172a !important;
+}
+
+/* Unread Badges & Counts: Pure bold white on bright badge */
+html.light-theme .bg-rose-600,
+html.light-theme .bg-violet-600 {
+  color: #ffffff !important;
+}
+
+
+/* Mobile Friendly Chat Scrolling & Safe Area Positioning */
+.safe-area-bottom {
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+}
+
+.chat-scroll-container {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
 

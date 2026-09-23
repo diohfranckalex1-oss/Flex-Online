@@ -1,13 +1,29 @@
 import React, { useState, useRef } from 'react';
-import { Image as ImageIcon, Smile, Globe, Users, X, Send } from 'lucide-react';
+import { 
+  Image as ImageIcon, 
+  Smile, 
+  Globe, 
+  Users, 
+  X, 
+  Send, 
+  Sparkles,
+  Camera,
+  Flame,
+  Music,
+  Check,
+  ShieldAlert
+} from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { ModerationResult } from '../../utils/moderationFilter';
 
 export const CreatePostBox: React.FC = () => {
-  const { currentUser, createPost } = useApp();
-  const [isOpen, setIsOpen] = useState(false);
+  const { currentUser, createPost, validateContent } = useApp();
   const [content, setContent] = useState('');
+  const [blockedWarning, setBlockedWarning] = useState<ModerationResult | null>(null);
   const [privacy, setPrivacy] = useState<'public' | 'friends'>('public');
   const [mediaUrl, setMediaUrl] = useState<string | null>(null);
+  const [showFullModal, setShowFullModal] = useState(false);
+  const [selectedVibe, setSelectedVibe] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,175 +37,169 @@ export const CreatePostBox: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePublish = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!content.trim() && !mediaUrl) return;
 
+    let finalContent = content.trim();
+    if (selectedVibe && !finalContent.includes(selectedVibe)) {
+      finalContent = `${finalContent} ${selectedVibe}`;
+    }
+
+    // Bouclier Automatique de Pudeur & Respect Flex
+    if (finalContent) {
+      const check = validateContent(finalContent);
+      if (check.isBlocked) {
+        setBlockedWarning(check);
+        return;
+      }
+    }
+
     createPost({
-      content: content.trim(),
+      content: finalContent,
       mediaUrl: mediaUrl || undefined,
       mediaType: 'image',
       privacy,
     });
 
+    setBlockedWarning(null);
     setContent('');
     setMediaUrl(null);
-    setIsOpen(false);
+    setSelectedVibe(null);
+    setShowFullModal(false);
   };
+
+  const QUICK_TAGS = [
+    { label: '#FlexLife 🔥', tag: '#flexlife' },
+    { label: '#Chill ☕', tag: '#chill' },
+    { label: '#Musique 🎶', tag: '#musique' },
+    { label: '#Tech 💻', tag: '#tech' },
+  ];
 
   return (
     <>
-      {/* Feed Trigger Card */}
-      <div id="create-post-card" className="bg-white rounded-2xl p-4 shadow-xs border border-neutral-200/80 mb-4">
-        <div className="flex items-center gap-3">
+      {/* Instant Inline Post Creator Card */}
+      <div id="create-post-card" className="bg-neutral-900 rounded-2xl p-4 shadow-xl border border-neutral-800 mb-4 transition-all hover:border-neutral-700/80">
+        <div className="flex items-start gap-3">
           <img
             src={currentUser.avatar}
             alt={currentUser.name}
-            className="w-10 h-10 rounded-full object-cover border border-neutral-200"
+            className="w-10 h-10 rounded-2xl object-cover ring-1 ring-indigo-500/50 shrink-0 mt-0.5"
           />
-          <button
-            id="btn-open-create-post"
-            onClick={() => setIsOpen(true)}
-            className="flex-1 text-left px-4 py-2.5 bg-neutral-100 hover:bg-neutral-200/70 text-neutral-500 rounded-full text-sm font-medium transition-colors"
-          >
-            Quoi de neuf, {currentUser.name.split(' ')[0]} ?
-          </button>
+
+          <div className="flex-1 min-w-0">
+            {blockedWarning && (
+              <div className="mb-2 p-3 bg-rose-950/95 border border-rose-500 rounded-xl text-white shadow-xl animate-fade-in flex items-start gap-2.5">
+                <ShieldAlert className="w-5 h-5 text-rose-300 shrink-0 mt-0.5" />
+                <div className="flex-1 text-xs">
+                  <p className="font-bold text-rose-100">{blockedWarning.reasonTitle}</p>
+                  <p className="text-rose-200 mt-0.5">{blockedWarning.explanation}</p>
+                  <p className="text-[11px] text-violet-300 mt-1 italic font-semibold">
+                    ✦ Flex est un espace d'échange respectueux et bienveillant.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setBlockedWarning(null)}
+                  className="text-rose-400 hover:text-white p-0.5"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
+
+            <textarea
+              rows={2}
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              placeholder={`Quoi de neuf, ${currentUser.name.split(' ')[0]} ? Exprimez-vous ici...`}
+              className="w-full bg-neutral-950/80 hover:bg-neutral-950 focus:bg-neutral-950 px-3.5 py-2.5 rounded-xl border border-neutral-800 text-xs sm:text-sm text-neutral-100 placeholder-neutral-500 focus:outline-hidden focus:border-indigo-500 transition-colors resize-none"
+            />
+
+            {/* Media preview if attached inline */}
+            {mediaUrl && (
+              <div className="relative mt-2 rounded-xl overflow-hidden border border-neutral-700 max-h-48 bg-neutral-950">
+                <img src={mediaUrl} alt="Aperçu photo" className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setMediaUrl(null)}
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-black/80 hover:bg-black text-white transition-colors"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {/* Quick hashtag suggestions */}
+            <div className="flex items-center gap-1.5 mt-2 overflow-x-auto pb-1 no-scrollbar">
+              {QUICK_TAGS.map((t) => (
+                <button
+                  key={t.tag}
+                  type="button"
+                  onClick={() => {
+                    if (!content.includes(t.tag)) {
+                      setContent((prev) => (prev ? `${prev} ${t.tag}` : t.tag));
+                    }
+                  }}
+                  className="px-2.5 py-1 rounded-lg bg-neutral-800/80 hover:bg-neutral-700 text-neutral-300 text-[11px] font-semibold shrink-0 transition-colors"
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="border-t border-neutral-100 mt-3 pt-3 flex items-center justify-around text-xs font-semibold text-neutral-600">
+        {/* Action bar under inline composer */}
+        <div className="border-t border-neutral-800/80 mt-3 pt-3 flex items-center justify-between">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
+            />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-neutral-800 text-neutral-400 hover:text-cyan-300 text-xs font-semibold transition-colors"
+            >
+              <ImageIcon className="w-4 h-4 text-cyan-400" />
+              <span>Photo</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPrivacy(privacy === 'public' ? 'friends' : 'public')}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl hover:bg-neutral-800 text-neutral-400 text-xs font-medium transition-colors"
+              title="Modifier la visibilité"
+            >
+              {privacy === 'public' ? (
+                <>
+                  <Globe className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="hidden sm:inline">Public</span>
+                </>
+              ) : (
+                <>
+                  <Users className="w-3.5 h-3.5 text-indigo-400" />
+                  <span className="hidden sm:inline">Amis</span>
+                </>
+              )}
+            </button>
+          </div>
+
           <button
-            onClick={() => {
-              setIsOpen(true);
-              setTimeout(() => fileInputRef.current?.click(), 100);
-            }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-neutral-100 transition-colors text-emerald-700"
+            type="button"
+            onClick={() => handlePublish()}
+            disabled={!content.trim() && !mediaUrl}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 disabled:opacity-40 disabled:hover:from-violet-600 disabled:hover:to-cyan-500 text-white text-xs font-black transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1.5"
           >
-            <ImageIcon className="w-4 h-4 text-emerald-600" />
-            <span>Photo / vidéo</span>
-          </button>
-          <button
-            onClick={() => setIsOpen(true)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-neutral-100 transition-colors text-amber-600"
-          >
-            <Smile className="w-4 h-4 text-amber-500" />
-            <span>Humeur / Activité</span>
+            <Send className="w-3.5 h-3.5" />
+            <span>Publier</span>
           </button>
         </div>
       </div>
-
-      {/* Modal Dialog for composing post */}
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl max-w-lg w-full shadow-2xl overflow-hidden border border-neutral-200">
-            {/* Header */}
-            <div className="px-5 py-3.5 border-b border-neutral-100 flex items-center justify-between">
-              <h3 className="font-bold text-neutral-900 text-base">Créer une publication</h3>
-              <button
-                id="btn-close-create-post"
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-600 flex items-center justify-center transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Author bar & audience selector */}
-            <form onSubmit={handleSubmit}>
-              <div className="p-4 space-y-3">
-                <div className="flex items-center gap-3">
-                  <img
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
-                    className="w-11 h-11 rounded-full object-cover border border-neutral-200"
-                  />
-                  <div>
-                    <h4 className="font-bold text-sm text-neutral-900">{currentUser.name}</h4>
-                    <div className="flex items-center gap-1.5 mt-0.5">
-                      <button
-                        type="button"
-                        onClick={() => setPrivacy(privacy === 'public' ? 'friends' : 'public')}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-neutral-100 text-neutral-600 hover:bg-neutral-200 text-xs font-medium transition-colors"
-                      >
-                        {privacy === 'public' ? (
-                          <>
-                            <Globe className="w-3 h-3 text-neutral-500" />
-                            Public
-                          </>
-                        ) : (
-                          <>
-                            <Users className="w-3 h-3 text-neutral-500" />
-                            Amis uniquement
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Text area */}
-                <textarea
-                  id="textarea-post-content"
-                  autoFocus
-                  rows={4}
-                  placeholder={`Qu'avez-vous en tête, ${currentUser.name.split(' ')[0]} ?`}
-                  value={content}
-                  onChange={(e) => setContent(e.target.value)}
-                  className="w-full text-neutral-900 placeholder:text-neutral-400 text-sm sm:text-base border-none resize-none focus:outline-hidden p-1"
-                />
-
-                {/* Media preview */}
-                {mediaUrl && (
-                  <div className="relative rounded-xl overflow-hidden border border-neutral-200 max-h-64">
-                    <img src={mediaUrl} alt="Publication" className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => setMediaUrl(null)}
-                      className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-
-                {/* Attachment bar */}
-                <div className="border border-neutral-200 rounded-xl p-3 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-neutral-700">Ajouter à votre publication</span>
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleFileChange}
-                      accept="image/*"
-                      className="hidden"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="p-2 rounded-full hover:bg-emerald-50 text-emerald-600 transition-colors"
-                      title="Ajouter une photo"
-                    >
-                      <ImageIcon className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <div className="p-4 pt-0">
-                <button
-                  type="submit"
-                  id="btn-submit-post"
-                  disabled={!content.trim() && !mediaUrl}
-                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-bold rounded-xl text-sm transition-colors shadow-xs flex items-center justify-center gap-2"
-                >
-                  <Send className="w-4 h-4" />
-                  Publier
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </>
   );
 };

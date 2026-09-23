@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="flexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#10b981" />
-      <stop offset="100%" stop-color="#047857" />
+      <stop offset="0%" stop-color="#8b5cf6" />
+      <stop offset="100%" stop-color="#6d28d9" />
     </linearGradient>
   </defs>
   <rect width="512" height="512" rx="112" fill="url(#flexGrad)" />
   <path d="M140 130 h210 c14 0 24 10 24 24 v20 c0 14 -10 24 -24 24 H210 v70 h120 c14 0 24 10 24 24 v20 c0 14 -10 24 -24 24 H210 v110 c0 14 -10 24 -24 24 h-22 c-14 0 -24 -10 -24 -24 V154 c0 -14 10 -24 24 -24 z" fill="#ffffff" />
-  <circle cx="390" cy="380" r="44" fill="#34d399" stroke="#065f46" stroke-width="12" />
+  <circle cx="390" cy="380" r="44" fill="#a855f7" stroke="#4c1d95" stroke-width="12" />
 </svg>

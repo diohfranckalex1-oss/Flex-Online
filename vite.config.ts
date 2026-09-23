@@ -17,8 +17,8 @@ export default defineConfig(() => {
           name: 'Flex Online',
           short_name: 'FlexOnline',
           description: 'Réseau social et messagerie instantanée en direct - Discussions, stories et fil d\'actualité.',
-          theme_color: '#059669',
-          background_color: '#ffffff',
+          theme_color: '#6d28d9',
+          background_color: '#0a0a0a',
           display: 'standalone',
           start_url: '/',
           scope: '/',
@@ -44,6 +44,9 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
+          cleanupOutdatedCaches: true,
+          clientsClaim: true,
+          skipWaiting: true,
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
         },
         devOptions: {
@@ -54,7 +57,7 @@ export default defineConfig(() => {
     ],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, '.'),
+        '@': path.resolve(import.meta.dirname, '.'),
       },
     },
     server: {

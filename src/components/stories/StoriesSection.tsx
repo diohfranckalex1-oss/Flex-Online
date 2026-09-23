@@ -33,27 +33,41 @@ export const StoriesSection: React.FC = () => {
 
   return (
     <>
+      {/* Header for Statuts & Stories */}
+      <div className="flex items-center justify-between mb-2.5 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="text-xs font-black uppercase tracking-wider text-neutral-300">
+            Statuts & Stories Flex (24h)
+          </span>
+        </div>
+        <span className="text-[11px] font-bold text-neutral-400">
+          {stories.length} mise{stories.length > 1 ? 's' : ''} à jour
+        </span>
+      </div>
+
       <div id="stories-section" className="mb-4 overflow-x-auto pb-1 no-scrollbar">
         <div className="flex gap-2.5 min-w-max">
-          {/* Card 1: Add Story */}
+          {/* Card 1: Mon Statut Flex */}
           <div
             id="card-add-story"
             onClick={() => fileInputRef.current?.click()}
-            className="w-28 h-44 sm:w-32 sm:h-52 rounded-2xl bg-white border border-neutral-200/80 overflow-hidden shadow-xs cursor-pointer relative group flex flex-col shrink-0 transition-transform active:scale-95"
+            className="w-28 h-44 sm:w-32 sm:h-52 rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-xl cursor-pointer relative group flex flex-col shrink-0 transition-transform active:scale-95"
+            title="Appuyez pour publier votre statut Flex"
           >
-            <div className="h-3/4 overflow-hidden bg-neutral-100">
+            <div className="h-3/4 overflow-hidden bg-neutral-950">
               <img
                 src={currentUser.avatar}
                 alt={currentUser.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
               />
             </div>
-            <div className="h-1/4 bg-white relative flex items-center justify-center p-2 text-center">
-              <div className="absolute -top-4 w-8 h-8 rounded-full bg-emerald-600 text-white border-2 border-white flex items-center justify-center shadow-xs">
+            <div className="h-1/4 bg-neutral-900 relative flex items-center justify-center p-2 text-center">
+              <div className="absolute -top-4 w-8 h-8 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white border-2 border-neutral-900 flex items-center justify-center shadow-lg shadow-indigo-600/30">
                 <Plus className="w-4 h-4" />
               </div>
-              <span className="text-[11px] font-bold text-neutral-800 mt-2 truncate">
-                Créer une story
+              <span className="text-[11px] font-black text-neutral-200 mt-2 truncate">
+                Mon statut Flex
               </span>
             </div>
 
@@ -66,43 +80,38 @@ export const StoriesSection: React.FC = () => {
             />
           </div>
 
-          {/* Contact Stories Cards */}
-          {stories.map((story, idx) => (
+          {/* User Stories */}
+          {stories.map((story, index) => (
             <div
               key={story.id}
               id={`story-card-${story.id}`}
-              onClick={() => setSelectedStoryIndex(idx)}
-              className="w-28 h-44 sm:w-32 sm:h-52 rounded-2xl overflow-hidden shadow-xs cursor-pointer relative group shrink-0 transition-all hover:shadow-md hover:-translate-y-0.5"
+              onClick={() => setSelectedStoryIndex(index)}
+              className="w-28 h-44 sm:w-32 sm:h-52 rounded-2xl overflow-hidden shadow-xl cursor-pointer relative group shrink-0 transition-transform active:scale-95 ring-1 ring-neutral-800"
             >
-              {/* Background media preview */}
+              {/* Background Media */}
               <img
                 src={story.mediaUrl}
                 alt={story.authorName}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-              {/* Author avatar with emerald ring */}
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
+
+              {/* Author Avatar with Glow ring */}
               <div className="absolute top-2.5 left-2.5">
-                <div className="w-9 h-9 rounded-full p-0.5 bg-gradient-to-tr from-emerald-500 to-teal-300 shadow-md">
-                  <img
-                    src={story.authorAvatar}
-                    alt={story.authorName}
-                    className="w-full h-full rounded-full object-cover border-2 border-neutral-900"
-                  />
-                </div>
+                <img
+                  src={story.authorAvatar}
+                  alt={story.authorName}
+                  className="w-8 h-8 rounded-full object-cover ring-2 ring-cyan-400 p-0.5 bg-neutral-900 shadow-md"
+                />
               </div>
 
-              {/* Author name on bottom */}
+              {/* Author Name */}
               <div className="absolute bottom-2.5 left-2.5 right-2.5">
-                <p className="text-white text-xs font-bold truncate drop-shadow-md">
+                <p className="text-xs font-bold text-white truncate drop-shadow-md">
                   {story.authorName}
                 </p>
-                {story.caption && (
-                  <p className="text-white/80 text-[10px] truncate">
-                    {story.caption}
-                  </p>
-                )}
               </div>
             </div>
           ))}
@@ -118,36 +127,37 @@ export const StoriesSection: React.FC = () => {
         />
       )}
 
-      {/* Publish Story Dialog */}
+      {/* Story Creator Modal */}
       {isCreatingStory && storyMedia && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-3xl max-w-sm w-full overflow-hidden shadow-2xl p-5 border border-neutral-200">
-            <h3 className="font-bold text-base text-neutral-900 mb-3">Nouvelle story</h3>
-            <div className="h-64 rounded-2xl overflow-hidden mb-3 bg-neutral-100">
-              <img src={storyMedia} alt="Aperçu" className="w-full h-full object-cover" />
-            </div>
-            <input
-              type="text"
-              placeholder="Ajoutez une légende facultative..."
-              value={storyCaption}
-              onChange={(e) => setStoryCaption(e.target.value)}
-              className="w-full px-3.5 py-2 text-sm bg-neutral-100 border border-neutral-200 rounded-xl mb-4 focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
-            />
-            <div className="flex gap-2">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4">
+          <div className="bg-neutral-900 rounded-3xl max-w-sm w-full overflow-hidden border border-neutral-800 shadow-2xl text-white">
+            <div className="p-4 border-b border-neutral-800 flex items-center justify-between">
+              <h3 className="font-bold text-sm">Nouvelle Story Flex</h3>
               <button
-                onClick={() => {
-                  setIsCreatingStory(false);
-                  setStoryMedia(null);
-                }}
-                className="flex-1 py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-100 rounded-xl"
+                onClick={() => setIsCreatingStory(false)}
+                className="text-xs text-neutral-400 hover:text-white"
               >
                 Annuler
               </button>
+            </div>
+
+            <div className="h-80 bg-neutral-950 overflow-hidden relative">
+              <img src={storyMedia} alt="Story" className="w-full h-full object-contain" />
+            </div>
+
+            <div className="p-4 space-y-3">
+              <input
+                type="text"
+                placeholder="Ajouter une légende..."
+                value={storyCaption}
+                onChange={(e) => setStoryCaption(e.target.value)}
+                className="w-full px-3 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-xs text-white placeholder-neutral-500 focus:outline-hidden"
+              />
               <button
                 onClick={handlePublishStory}
-                className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-xs"
+                className="w-full py-2.5 bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white rounded-xl font-bold text-xs shadow-lg shadow-indigo-600/30"
               >
-                Partager la story
+                Publier la story
               </button>
             </div>
           </div>

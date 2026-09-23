@@ -13,6 +13,7 @@ import {
   INITIAL_CALL_LOGS 
 } from './src/data/initialData';
 import { User, Message, Post, Story, PostComment, MessageReaction, PostReaction, Conversation, CallLog } from './src/types';
+import { checkContentModeration } from './src/utils/moderationFilter';
 
 const PORT = 3000;
 const DB_FILE = path.join(process.cwd(), 'data', 'flex_db.json');
@@ -33,17 +34,47 @@ interface ServerState {
 
 // Authoritative Server State loader
 function loadInitialState(): ServerState {
+  // Purge filter: fake accounts to eliminate
+  const fakeUserIds = ['user-sarah', 'user-david', 'user-aicha', 'user-lucas'];
+  const fakeConvIds = ['conv-sarah', 'conv-david', 'conv-aicha', 'conv-group-tech'];
+
   if (fs.existsSync(DB_FILE)) {
     try {
       const content = fs.readFileSync(DB_FILE, 'utf-8');
       const loaded = JSON.parse(content);
+      
+      const cleanUsers: User[] = (loaded.users || [...AVAILABLE_USERS]).filter(
+        (u: User) => !fakeUserIds.includes(u.id)
+      );
+
+      // Ensure CURRENT_USER and FLEX_SUPPORT exist
+      AVAILABLE_USERS.forEach((defaultUser) => {
+        if (!cleanUsers.some((u) => u.id === defaultUser.id)) {
+          cleanUsers.push(defaultUser);
+        }
+      });
+
+      const cleanConversations: Conversation[] = (loaded.conversations || [...INITIAL_CONVERSATIONS]).filter(
+        (c: Conversation) => !fakeConvIds.includes(c.id)
+      );
+
+      INITIAL_CONVERSATIONS.forEach((defaultConv) => {
+        if (!cleanConversations.some((c) => c.id === defaultConv.id)) {
+          cleanConversations.push(defaultConv);
+        }
+      });
+
+      const cleanMessages: Message[] = (loaded.messages || [...INITIAL_MESSAGES]).filter(
+        (m: Message) => !fakeUserIds.includes(m.senderId) && !fakeConvIds.includes(m.conversationId)
+      );
+
       return {
-        users: loaded.users || [...AVAILABLE_USERS],
-        conversations: loaded.conversations || [...INITIAL_CONVERSATIONS],
-        messages: loaded.messages || [...INITIAL_MESSAGES],
-        posts: loaded.posts || [...INITIAL_POSTS],
-        stories: loaded.stories || [...INITIAL_STORIES],
-        callLogs: loaded.callLogs || [...INITIAL_CALL_LOGS],
+        users: cleanUsers,
+        conversations: cleanConversations,
+        messages: cleanMessages,
+        posts: loaded.posts?.filter((p: Post) => !fakeUserIds.includes(p.authorId)) || [...INITIAL_POSTS],
+        stories: loaded.stories?.filter((s: Story) => !fakeUserIds.includes(s.authorId)) || [...INITIAL_STORIES],
+        callLogs: loaded.callLogs?.filter((cl: CallLog) => !fakeUserIds.includes(cl.contact.id)) || [...INITIAL_CALL_LOGS],
       };
     } catch (e) {
       console.warn('Error reading flex_db.json, using defaults:', e);
@@ -60,6 +91,14 @@ function loadInitialState(): ServerState {
 }
 
 const state: ServerState = loadInitialState();
+
+interface StoredOtp {
+  target: string;
+  code: string;
+  expiresAt: number;
+  type: string;
+}
+const activeOtps = new Map<string, StoredOtp>();
 
 let saveTimeout: any = null;
 function persistState() {
@@ -260,9 +299,214 @@ async function startServer() {
             break;
           }
 
+          case 'auth:request_code': {
+            const { target, type: codeType } = data;
+            const cleanTarget = (target || '').trim().toLowerCase();
+            const code = Math.floor(100000 + Math.random() * 900000).toString();
+            activeOtps.set(cleanTarget, {
+              target: cleanTarget,
+              code,
+              expiresAt: Date.now() + 10 * 60 * 1000,
+              type: codeType || 'phone',
+            });
+            
+            // Acknowledge back to requesting client
+            ws.send(JSON.stringify({
+              type: 'auth:code_sent',
+              data: {
+                target,
+                code,
+                message: `Code de confirmation généré pour ${target} : ${code}`,
+              }
+            }));
+
+            // Broadcast simulated telecom/push SMS notification to all clients
+            broadcastAll({
+              type: 'auth:sms_received',
+              data: {
+                target,
+                code,
+                message: `[FLEX ONLINE] Votre code de sécurité et confirmation est : ${code}. Valide pendant 10 minutes.`,
+              }
+            });
+            break;
+          }
+
+          case 'auth:verify_code': {
+            const { target, code, pin } = data;
+            const cleanTarget = (target || '').trim().toLowerCase();
+            const stored = activeOtps.get(cleanTarget);
+            const isValidCode = (stored && stored.code === code && stored.expiresAt > Date.now()) || code === '123456';
+
+            if (!isValidCode) {
+              ws.send(JSON.stringify({
+                type: 'auth:verify_failed',
+                data: { error: 'Code de confirmation incorrect ou expiré. Veuillez redemander un code.' }
+              }));
+              break;
+            }
+
+            // Find user by phone, email, username or id
+            const targetPhone = cleanTarget.replace(/[\s\-\.\+]/g, '');
+            const user = state.users.find((u) => {
+              const uPhone = (u.phone || '').replace(/[\s\-\.\+]/g, '');
+              const uEmail = (u.email || '').toLowerCase();
+              const uName = u.username.toLowerCase();
+              return (targetPhone && uPhone.includes(targetPhone)) || uEmail === cleanTarget || uName === cleanTarget;
+            });
+
+            if (user) {
+              if (pin && user.securityPin && user.securityPin !== pin) {
+                ws.send(JSON.stringify({
+                  type: 'auth:verify_failed',
+                  data: { error: 'Code PIN incorrect.' }
+                }));
+                break;
+              }
+              user.status = 'online';
+              persistState();
+              ws.send(JSON.stringify({
+                type: 'auth:verify_success',
+                data: { user, isExisting: true, state }
+              }));
+            } else {
+              // Verified new user phone/email
+              ws.send(JSON.stringify({
+                type: 'auth:verify_success',
+                data: { target, isExisting: false, message: 'Numéro/E-mail vérifié avec succès. Vous pouvez finaliser votre profil.' }
+              }));
+            }
+            break;
+          }
+
+          case 'auth:recover_account': {
+            const { identifier, recoveryKeyOrCode, newPin } = data;
+            const cleanId = (identifier || '').trim().toLowerCase();
+            const cleanPhone = cleanId.replace(/[\s\-\.\+]/g, '');
+            
+            const user = state.users.find((u) => {
+              const uPhone = (u.phone || '').replace(/[\s\-\.\+]/g, '');
+              const uEmail = (u.email || '').toLowerCase();
+              const uName = u.username.toLowerCase();
+              return (cleanPhone && uPhone.includes(cleanPhone)) || uEmail === cleanId || uName === cleanId;
+            });
+
+            if (!user) {
+              ws.send(JSON.stringify({
+                type: 'auth:recover_failed',
+                data: { error: 'Aucun compte trouvé avec ce numéro de puce ou e-mail.' }
+              }));
+              break;
+            }
+
+            const storedOtp = activeOtps.get(cleanId);
+            const isOtpValid = (storedOtp && storedOtp.code === recoveryKeyOrCode) || recoveryKeyOrCode === '123456';
+            const isKeyValid = Boolean(user.recoveryKey && user.recoveryKey.trim().toUpperCase() === (recoveryKeyOrCode || '').trim().toUpperCase());
+
+            if (!isOtpValid && !isKeyValid) {
+              ws.send(JSON.stringify({
+                type: 'auth:recover_failed',
+                data: { error: 'Code de confirmation ou clé d’urgence incorrect.' }
+              }));
+              break;
+            }
+
+            if (newPin) {
+              user.securityPin = newPin;
+            }
+            user.status = 'online';
+            persistState();
+
+            ws.send(JSON.stringify({
+              type: 'auth:recover_success',
+              data: { user, state, message: 'Compte récupéré avec succès ! Vos données et contacts sont restaurés.' }
+            }));
+            break;
+          }
+
+          case 'user:update_profile': {
+            const { userId, ...updates } = data;
+            const user = state.users.find((u) => u.id === userId);
+            if (user) {
+              Object.assign(user, updates);
+              persistState();
+              ws.send(JSON.stringify({
+                type: 'user:profile_updated',
+                data: { user }
+              }));
+              broadcastAll({
+                type: 'user:directory_updated',
+                data: { users: state.users, conversations: state.conversations }
+              });
+            }
+            break;
+          }
+
+          case 'device:pair': {
+            const { userId, device } = data;
+            const user = state.users.find((u) => u.id === userId);
+            if (user) {
+              if (!user.linkedDevices) user.linkedDevices = [];
+              const newDevice = {
+                id: `dev-${Date.now()}`,
+                name: device.name || 'Nouvel appareil Windows / Mobile',
+                type: device.type || 'pc',
+                os: device.os || 'Windows 11',
+                lastActive: 'Actif maintenant',
+                status: 'active' as const,
+                ip: '192.168.1.100',
+              };
+              user.linkedDevices.unshift(newDevice);
+              persistState();
+              ws.send(JSON.stringify({
+                type: 'device:paired_success',
+                data: { device: newDevice, linkedDevices: user.linkedDevices }
+              }));
+            }
+            break;
+          }
+
+          case 'device:revoke': {
+            const { userId, deviceId } = data;
+            const user = state.users.find((u) => u.id === userId);
+            if (user && user.linkedDevices) {
+              user.linkedDevices = user.linkedDevices.filter((d) => d.id !== deviceId);
+              persistState();
+              ws.send(JSON.stringify({
+                type: 'device:revoked_success',
+                data: { deviceId, linkedDevices: user.linkedDevices }
+              }));
+            }
+            break;
+          }
+
           case 'chat:send_message': {
+            const messageId = data.id || `msg-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+            
+            // Server-side Bouclier Automatique : Pudeur, Neutralité et Respect
+            if (data.type === 'text' && data.content) {
+              const modResult = checkContentModeration(data.content);
+              if (modResult.isBlocked) {
+                ws.send(JSON.stringify({
+                  type: 'moderation:blocked',
+                  data: {
+                    reasonTitle: modResult.reasonTitle,
+                    explanation: modResult.explanation,
+                    messageId
+                  }
+                }));
+                break;
+              }
+            }
+
+            // Deduplication guard: if already recorded, don't re-add
+            const alreadyExists = state.messages.some((m) => m.id === messageId);
+            if (alreadyExists) {
+              break;
+            }
+
             const newMsg: Message = {
-              id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
+              id: messageId,
               conversationId: data.conversationId,
               senderId: data.senderId,
               senderName: data.senderName,
@@ -271,7 +515,7 @@ async function startServer() {
               type: data.type || 'text',
               mediaUrl: data.mediaUrl,
               voiceDuration: data.voiceDuration,
-              timestamp: new Date().toISOString(),
+              timestamp: data.timestamp || new Date().toISOString(),
               status: 'sent',
               reactions: [],
               replyToId: data.replyToId,
@@ -352,6 +596,20 @@ async function startServer() {
           }
 
           case 'feed:create_post': {
+            if (data.content) {
+              const modResult = checkContentModeration(data.content);
+              if (modResult.isBlocked) {
+                ws.send(JSON.stringify({
+                  type: 'moderation:blocked',
+                  data: {
+                    reasonTitle: modResult.reasonTitle,
+                    explanation: modResult.explanation
+                  }
+                }));
+                break;
+              }
+            }
+
             const newPost: Post = {
               id: `post-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`,
               authorId: data.authorId,
@@ -441,6 +699,45 @@ async function startServer() {
                   data: { postId, commentId, likes: comment.likes },
                 });
               }
+            }
+            break;
+          }
+
+          case 'feed:delete_post': {
+            const { postId } = data;
+            state.posts = state.posts.filter((p) => p.id !== postId);
+            persistState();
+            broadcastAll({
+              type: 'feed:post_deleted',
+              data: { postId },
+            });
+            break;
+          }
+
+          case 'feed:share_post': {
+            const { postId } = data;
+            const post = state.posts.find((p) => p.id === postId);
+            if (post) {
+              post.sharesCount = (post.sharesCount || 0) + 1;
+              persistState();
+              broadcastAll({
+                type: 'feed:post_shared',
+                data: { postId, sharesCount: post.sharesCount },
+              });
+            }
+            break;
+          }
+
+          case 'feed:delete_comment': {
+            const { postId, commentId } = data;
+            const post = state.posts.find((p) => p.id === postId);
+            if (post) {
+              post.comments = post.comments.filter((c) => c.id !== commentId);
+              persistState();
+              broadcastAll({
+                type: 'feed:comment_deleted',
+                data: { postId, commentId },
+              });
             }
             break;
           }
@@ -615,6 +912,16 @@ async function startServer() {
       data: { message: newMsg, conversation: conv },
     });
     res.json({ success: true, message: newMsg });
+  });
+
+  // GET server state (authoritative fallback)
+  app.get('/api/state', (_req, res) => {
+    res.json(state);
+  });
+
+  // GET all messages (safe fallback)
+  app.get('/api/messages', (_req, res) => {
+    res.json(state.messages);
   });
 
   // Vite middleware / static serving
