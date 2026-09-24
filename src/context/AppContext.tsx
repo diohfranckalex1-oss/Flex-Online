@@ -27,6 +27,9 @@ import { playNotificationSound } from '../utils/callSounds';
 
 interface AppContextType {
   currentUser: User;
+  isAuthenticated: boolean;
+  setIsAuthenticated: (auth: boolean) => void;
+  logoutUser: () => void;
   users: User[];
   activeTab: 'chats' | 'feed' | 'stories' | 'calls';
   setActiveTab: (tab: 'chats' | 'feed' | 'stories' | 'calls') => void;
@@ -96,10 +99,15 @@ interface AppContextType {
   // Actions
   registerUser: (data: {
     name: string;
+    firstName?: string;
+    lastName?: string;
+    country?: string;
+    countryCode?: string;
     username?: string;
-    avatar: string;
+    avatar?: string;
     bio?: string;
     phone?: string;
+    email?: string;
     securityPin?: string;
   }) => void;
   loginUser: (identifier: string, pin?: string, recoveryKey?: string) => Promise<{ success: boolean; error?: string }>;
@@ -177,6 +185,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const [currentUser, setCurrentUser] = useState<User>(getInitialUser);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('flex_online_authenticated') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const logoutUser = () => {
+    setIsAuthenticated(false);
+    try {
+      localStorage.removeItem('flex_online_authenticated');
+    } catch (e) {}
+  };
   const [users, setUsers] = useState<User[]>(AVAILABLE_USERS);
   const [activeTab, setActiveTab] = useState<'chats' | 'feed' | 'stories' | 'calls'>('chats');
   const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
@@ -691,8 +713,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             case 'user:login_success': {
               if (data.user) {
                 setCurrentUser(data.user);
+                setIsAuthenticated(true);
                 try {
                   localStorage.setItem('flex_online_current_user', JSON.stringify(data.user));
+                  localStorage.setItem('flex_online_authenticated', 'true');
                 } catch (err) {}
               }
               if (data.state) {
@@ -1033,39 +1057,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const registerUser = (data: {
     name: string;
+    firstName?: string;
+    lastName?: string;
+    country?: string;
+    countryCode?: string;
     username?: string;
-    avatar: string;
+    avatar?: string;
     bio?: string;
     phone?: string;
+    email?: string;
     securityPin?: string;
   }) => {
-    const cleanUsername = (data.username || data.name.toLowerCase().replace(/\s+/g, '_')).trim();
+    const cleanUsername = (data.username || (data.firstName ? `${data.firstName.toLowerCase()}_${(data.lastName || '').toLowerCase()}` : data.name.toLowerCase().replace(/\s+/g, '_'))).trim().replace(/[^a-zA-Z0-9_]/g, '');
+    const avatarUrl = data.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername || 'flex_user'}`;
     const newUser: User = {
       id: `user-${Date.now()}`,
       name: data.name.trim(),
+      firstName: data.firstName?.trim(),
+      lastName: data.lastName?.trim(),
+      country: data.country || "Côte d'Ivoire",
+      countryCode: data.countryCode || '+225',
       username: cleanUsername,
-      avatar: data.avatar,
-      bio: data.bio || 'Nouveau membre sur Flex Online ! 👋',
-      phone: data.phone || '+33 6 00 00 00 00',
+      avatar: avatarUrl,
+      bio: data.bio || `Membre officiel Flex Online (${data.country || 'International'}) 👋`,
+      phone: data.phone || '+225 00 00 00 00',
+      email: data.email?.trim(),
       status: 'online',
-      verified: false,
+      verified: true,
       securityPin: data.securityPin || '1234',
       recoveryKey: `FLEX-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`,
       createdAt: new Date().toISOString(),
     };
 
     setCurrentUser(newUser);
+    setUsers((prev) => [newUser, ...prev.filter((u) => u.id !== newUser.id)]);
+    setIsAuthenticated(true);
     try {
       localStorage.setItem('flex_online_current_user', JSON.stringify(newUser));
+      localStorage.setItem('flex_online_authenticated', 'true');
     } catch (e) {}
 
-    sendWsMessage('user:register', data);
+    sendWsMessage('user:register', { ...data, id: newUser.id, username: cleanUsername, avatar: avatarUrl });
 
     // Also send HTTP fallback
     fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, id: newUser.id, username: cleanUsername, avatar: avatarUrl }),
     }).catch((err) => console.warn('HTTP register fallback failed:', err));
   };
 
@@ -1078,8 +1116,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const uName = u.username.toLowerCase();
         const uFullName = u.name.toLowerCase();
         const uPhone = (u.phone || '').replace(/[\s\-\.\+]/g, '');
+        const uEmail = (u.email || '').toLowerCase();
         const uId = u.id.toLowerCase();
-        return uName === query || uFullName === query || (cleanPhone && uPhone && uPhone.includes(cleanPhone)) || uId === query;
+        return uName === query || uFullName === query || (cleanPhone && uPhone && uPhone.includes(cleanPhone)) || (uEmail && uEmail === query) || uId === query;
       });
 
       if (localFound) {
@@ -1092,8 +1131,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }
 
         setCurrentUser(localFound);
+        setIsAuthenticated(true);
         try {
           localStorage.setItem('flex_online_current_user', JSON.stringify(localFound));
+          localStorage.setItem('flex_online_authenticated', 'true');
         } catch (e) {}
       }
 
@@ -1817,6 +1858,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     <AppContext.Provider
       value={{
         currentUser,
+        isAuthenticated,
+        setIsAuthenticated,
+        logoutUser,
         users,
         activeTab,
         setActiveTab,

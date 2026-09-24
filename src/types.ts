@@ -14,6 +14,10 @@ export interface LinkedDevice {
 export interface User {
   id: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
+  country?: string;
+  countryCode?: string;
   username: string;
   avatar: string;
   bio?: string;

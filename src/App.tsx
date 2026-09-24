@@ -8,6 +8,7 @@ import { StoriesView } from './components/stories/StoriesView';
 import { CallsView } from './components/calls/CallsView';
 import { CallModal } from './components/calls/CallModal';
 import { AuthModal } from './components/auth/AuthModal';
+import { RegistrationGate } from './components/auth/RegistrationGate';
 import { SmsNotificationToast } from './components/auth/SmsNotificationToast';
 import { ProfilePhotoModal } from './components/profile/ProfilePhotoModal';
 import { SettingsModal } from './components/settings/SettingsModal';
@@ -115,15 +116,34 @@ const MainContent: React.FC = () => {
   );
 };
 
+const AppShell: React.FC = () => {
+  const { isAuthenticated } = useApp();
+
+  // If user is not yet registered or authenticated, enforce the Registration & Verification Gate
+  if (!isAuthenticated) {
+    return (
+      <div className="h-[100dvh] max-h-[100dvh] flex flex-col bg-neutral-950 font-sans text-neutral-100 overflow-hidden relative">
+        <RegistrationGate />
+        {/* Real-time SMS / OTP Code Notification Toast */}
+        <SmsNotificationToast />
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-[100dvh] max-h-[100dvh] flex flex-col bg-neutral-950 font-sans text-neutral-100 selection:bg-violet-600 selection:text-white overflow-hidden">
+      <Header />
+      <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <MainContent />
+      </main>
+    </div>
+  );
+};
+
 export default function App() {
   return (
     <AppProvider>
-      <div className="h-[100dvh] max-h-[100dvh] flex flex-col bg-neutral-950 font-sans text-neutral-100 selection:bg-violet-600 selection:text-white overflow-hidden">
-        <Header />
-        <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
-          <MainContent />
-        </main>
-      </div>
+      <AppShell />
     </AppProvider>
   );
 }

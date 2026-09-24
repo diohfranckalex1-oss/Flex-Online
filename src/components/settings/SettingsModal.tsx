@@ -34,7 +34,8 @@ import {
   Image as ImageIcon,
   RefreshCw,
   Trash2,
-  Zap
+  Zap,
+  LogOut
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { FlexQRCodeScanner } from '../devices/FlexQRCodeScanner';
@@ -78,6 +79,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
     setChatWallpaper,
     uploadCustomWallpaper,
     resetChatWallpaper,
+    logoutUser,
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<'display' | 'guide' | 'accounts' | 'devices' | 'security' | 'moderation' | 'chats'>('display');
@@ -1392,6 +1394,19 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose })
             >
               <RefreshCw className="w-3 h-3" />
               <span>Vider le cache</span>
+            </button>
+            <button
+              onClick={() => {
+                if (window.confirm('Voulez-vous vraiment vous déconnecter de votre compte Flex Online ?')) {
+                  onClose();
+                  logoutUser();
+                }
+              }}
+              className="flex items-center gap-1 text-[11px] text-rose-300 hover:text-rose-100 bg-rose-950/40 hover:bg-rose-900/60 px-2.5 py-1 rounded-lg border border-rose-800/60 transition font-bold"
+              title="Se déconnecter du compte"
+            >
+              <LogOut className="w-3 h-3" />
+              <span>Se déconnecter</span>
             </button>
           </div>
           <button

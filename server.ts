@@ -153,14 +153,19 @@ async function startServer() {
 
         switch (type) {
           case 'user:register': {
-            const { name, username, avatar, bio, phone, securityPin } = data;
-            const cleanUsername = (username || name.toLowerCase().replace(/\s+/g, '_')).trim();
-            const existingUser = state.users.find((u) => u.username.toLowerCase() === cleanUsername.toLowerCase());
+            const { name, firstName, lastName, country, countryCode, username, avatar, bio, phone, email, securityPin } = data;
+            const cleanUsername = (username || (firstName ? `${firstName.toLowerCase()}_${(lastName || '').toLowerCase()}` : name.toLowerCase().replace(/\s+/g, '_'))).trim().replace(/[^a-zA-Z0-9_]/g, '');
+            const existingUser = state.users.find((u) => u.username.toLowerCase() === cleanUsername.toLowerCase() || (phone && u.phone === phone));
             
             let userToUse: User;
             if (existingUser) {
               if (securityPin) existingUser.securityPin = securityPin;
               if (phone) existingUser.phone = phone;
+              if (email) existingUser.email = email;
+              if (country) existingUser.country = country;
+              if (countryCode) existingUser.countryCode = countryCode;
+              if (firstName) existingUser.firstName = firstName;
+              if (lastName) existingUser.lastName = lastName;
               if (!existingUser.recoveryKey) {
                 existingUser.recoveryKey = `FLEX-${Math.random().toString(36).substring(2, 6).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
               }
@@ -171,12 +176,17 @@ async function startServer() {
               userToUse = {
                 id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`,
                 name: name.trim(),
+                firstName: firstName?.trim(),
+                lastName: lastName?.trim(),
+                country: country || 'Côte d\'Ivoire',
+                countryCode: countryCode || '+225',
                 username: cleanUsername,
-                avatar: avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername}`,
-                bio: bio?.trim() || 'Nouveau membre sur Flex Online ! 👋',
-                phone: phone?.trim() || '+33 6 00 00 00 00',
+                avatar: avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername || 'flex'}`,
+                bio: bio?.trim() || `Nouveau membre sur Flex Online (${country || 'International'}) ! 👋`,
+                phone: phone?.trim() || '+225 00 00 00 00',
+                email: email?.trim(),
                 status: 'online',
-                verified: false,
+                verified: true,
                 securityPin: securityPin || '1234',
                 recoveryKey: generatedRecoveryKey,
                 createdAt: new Date().toISOString(),
@@ -857,21 +867,28 @@ async function startServer() {
   });
 
   app.post('/api/register', (req, res) => {
-    const { name, username, avatar, bio, phone } = req.body;
+    const { name, firstName, lastName, country, countryCode, username, avatar, bio, phone, email, securityPin } = req.body;
     if (!name) return res.status(400).json({ error: 'Le nom est obligatoire' });
-    const cleanUsername = (username || name.toLowerCase().replace(/\s+/g, '_')).trim();
+    const cleanUsername = (username || (firstName ? `${firstName.toLowerCase()}_${(lastName || '').toLowerCase()}` : name.toLowerCase().replace(/\s+/g, '_'))).trim().replace(/[^a-zA-Z0-9_]/g, '');
     
-    let user = state.users.find((u) => u.username.toLowerCase() === cleanUsername.toLowerCase());
+    let user = state.users.find((u) => u.username.toLowerCase() === cleanUsername.toLowerCase() || (phone && u.phone === phone));
     if (!user) {
       user = {
         id: `user-${Date.now()}`,
         name: name.trim(),
+        firstName: firstName?.trim(),
+        lastName: lastName?.trim(),
+        country: country || 'Côte d\'Ivoire',
+        countryCode: countryCode || '+225',
         username: cleanUsername,
-        avatar: avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername}`,
-        bio: bio || 'Membre Flex Online 🚀',
-        phone: phone || '',
+        avatar: avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername || 'flex'}`,
+        bio: bio || `Membre Flex Online (${country || 'International'}) 🚀`,
+        phone: phone || '+225 00 00 00 00',
+        email: email?.trim(),
         status: 'online',
-        verified: false,
+        verified: true,
+        securityPin: securityPin || '1234',
+        createdAt: new Date().toISOString(),
       };
       state.users.push(user);
       persistState();
@@ -879,6 +896,14 @@ async function startServer() {
         type: 'user:directory_updated',
         data: { users: state.users, newUser: user },
       });
+    } else {
+      if (securityPin) user.securityPin = securityPin;
+      if (phone) user.phone = phone;
+      if (email) user.email = email;
+      if (country) user.country = country;
+      if (firstName) user.firstName = firstName;
+      if (lastName) user.lastName = lastName;
+      persistState();
     }
     res.json({ success: true, user });
   });
