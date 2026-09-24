@@ -15,11 +15,15 @@ import {
   AlertCircle,
   KeyRound,
   Eye,
-  EyeOff
+  EyeOff,
+  Film,
+  Bot
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { FlexLogo } from '../common/FlexLogo';
 import { COUNTRIES, CountryOption } from '../../data/countries';
+import { FlexCommercialModal } from '../promo/FlexCommercialModal';
+import { FlexAiModal } from '../ai/FlexAiModal';
 
 export const RegistrationGate: React.FC = () => {
   const { 
@@ -60,6 +64,8 @@ export const RegistrationGate: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isCommercialOpen, setIsCommercialOpen] = useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   // Countdown timer for resending OTP
   useEffect(() => {
@@ -706,12 +712,45 @@ export const RegistrationGate: React.FC = () => {
           </form>
         )}
 
+        {/* Official Commercial Video Ad Trigger & Flex IA Preview */}
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsCommercialOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-950/70 hover:bg-violet-900/80 border border-violet-700/60 text-violet-300 hover:text-white text-xs font-bold transition shadow-sm group active:scale-95"
+          >
+            <Film className="w-3.5 h-3.5 text-violet-400 group-hover:scale-110 transition-transform" />
+            <span>🎬 Spot Publicitaire (35s)</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setIsAiModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-violet-600/30 to-indigo-600/30 hover:from-violet-600/50 hover:to-indigo-600/50 border border-violet-500/50 text-violet-200 hover:text-white text-xs font-bold transition shadow-sm group active:scale-95"
+          >
+            <Bot className="w-3.5 h-3.5 text-violet-300 group-hover:rotate-12 transition-transform" />
+            <span>🤖 Poser une question à Flex IA</span>
+          </button>
+        </div>
+
         {/* Footer Security Notice */}
-        <div className="mt-6 pt-4 border-t border-neutral-800/60 flex items-center justify-center gap-2 text-[11px] text-neutral-500 text-center">
+        <div className="mt-4 pt-4 border-t border-neutral-800/60 flex items-center justify-center gap-2 text-[11px] text-neutral-500 text-center">
           <ShieldCheck className="w-4 h-4 text-violet-400 shrink-0" />
           <span>Sécurité renforcée par Chiffrement de bout en bout & Code SIM</span>
         </div>
       </div>
+
+      {/* 35s Official Commercial Video Modal */}
+      <FlexCommercialModal
+        isOpen={isCommercialOpen}
+        onClose={() => setIsCommercialOpen(false)}
+      />
+
+      {/* Flex IA Assistant Modal */}
+      <FlexAiModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+      />
     </div>
   );
 };

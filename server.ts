@@ -1,22 +1,118 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import http from 'http';
 import path from 'path';
 import fs from 'fs';
 import { WebSocketServer, WebSocket } from 'ws';
 import { createServer as createViteServer } from 'vite';
+import { GoogleGenAI } from '@google/genai';
 import { 
   AVAILABLE_USERS, 
   INITIAL_CONVERSATIONS, 
   INITIAL_MESSAGES, 
   INITIAL_POSTS, 
   INITIAL_STORIES, 
-  INITIAL_CALL_LOGS 
+  INITIAL_CALL_LOGS,
+  FLEX_AI
 } from './src/data/initialData';
 import { User, Message, Post, Story, PostComment, MessageReaction, PostReaction, Conversation, CallLog } from './src/types';
 import { checkContentModeration } from './src/utils/moderationFilter';
 
 const PORT = 3000;
 const DB_FILE = path.join(process.cwd(), 'data', 'flex_db.json');
+
+// Initialize Gemini API client on server-side
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+  httpOptions: {
+    headers: {
+      'User-Agent': 'aistudio-build',
+    }
+  }
+});
+
+const FLEX_AI_SYSTEM_INSTRUCTION = `Tu es "Flex IA", l'Intelligence Artificielle officielle de la plateforme sociale et de messagerie instantanée Flex Online.
+Tu es là pour accompagner tous les utilisateurs, répondre à toutes leurs questions sans aucune limite (tous domaines confondus), et leur faire découvrir l'application ainsi que son créateur.
+
+1. TON CRÉATEUR & FONDATEUR : FRANCK ALEX
+- Ton créateur est Franck Alex (Alex Dioh, email: diohfranckalex1@gmail.com).
+- C'est un jeune prodige et innovateur numérique passionné, créateur et architecte en chef de Flex Online.
+- Il a conçu et développé cette plateforme pour donner une super-application sociale moderne, ultra-rapide, respectueuse de la vie privée et dotée d'une sécurité impénétrable.
+- Quand un utilisateur te demande "Qui t'a créé ?", "Qui est le créateur de Flex Online ?", "Parle-moi de Franck Alex", ou toute question liée à son concepteur : présente Franck Alex avec fierté, respect, chaleur et admiration pour son dévouement, son travail et sa vision.
+
+2. L'APPLICATION FLEX ONLINE :
+- Plateforme tout-en-un réunissant :
+  • Messagerie instantanée chiffrée (textes, notes vocales avec ondes sonores, photos, vidéos, documents, réactions émojis).
+  • Fil d'actualité moderne (posts, photos, commentaires, likes, filtres).
+  • Stories éphémères vibrantes (durée 24h).
+  • Appels vocaux et vidéo HD limpides entièrement chiffrés.
+  • Flex Lounge (salons audio communautaires en direct).
+- Sécurité et Confidentialité maximale :
+  • Chiffrement de bout en bout de toutes les discussions.
+  • Inscription obligatoire rapide avec sélection du pays et indicatif automatique, validation instantanée par SMS ou Email.
+  • Code PIN de verrouillage secret à 4 chiffres.
+  • Clé de récupération d'urgence unique (ex: FLEX-ALEX-9901) pour restaurer son compte et ses contacts en cas de perte de téléphone ou changement d'appareil.
+  • Protection par puce SIM active.
+  • Bouclier de pudeur et modération automatique contre les insultes, harcèlements et propos inappropriés.
+- Fonctionnalités exclusives :
+  • Gestion de 2 comptes sur le même smartphone avec bascule instantanée en 1 clic sans déconnexion.
+  • Synchronisation PC Windows en direct par QR Code sans fil.
+  • Application Web Progressive (PWA) installable sur tout appareil (Android, iPhone, Windows, Mac).
+
+3. ASSISTANCE UNIVERSELLE (QUESTIONS DE TOUT GENRE) :
+- Tu es un assistant universel d'élite : cultivé, chaleureux, pédagogue, rigoureux et très serviable.
+- Tu réponds avec brio à TOUTES les questions sur n'importe quel domaine :
+  • Sciences, mathématiques, histoire, géographie, philosophie.
+  • Travail, carrière, rédaction d'emails professionnels, CV, lettres de motivation, idées de business et stratégies.
+  • Informatique, programmation (JavaScript, Python, React, TypeScript, algorithmes, etc.).
+  • Vie quotidienne, conseils pratiques, cuisine, santé générale, bien-être, sport.
+  • Créativité, écriture de poèmes, légendes et posts pour le fil Flex Online.
+- Ton style est direct, captivant, clair et structuré (avec des puces et des émojis pertinents). Réponds toujours en français par défaut (ou dans la langue utilisée par l'utilisateur s'il s'adresse à toi en anglais, espagnol, etc.). Reste bienveillant, enthousiaste et concis.`;
+
+async function getAiAnswer(prompt: string, conversationHistory: Message[] = []): Promise<string> {
+  const cleanPrompt = prompt.trim();
+  const lower = cleanPrompt.toLowerCase();
+
+  try {
+    if (process.env.GEMINI_API_KEY) {
+      const recentHistory = conversationHistory
+        .slice(-6)
+        .map(m => `${m.senderName}: ${m.content}`)
+        .join('\n');
+
+      const fullPrompt = recentHistory
+        ? `Historique récent de la discussion :\n${recentHistory}\n\nNouvelle question de l'utilisateur :\n${cleanPrompt}`
+        : cleanPrompt;
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.8-flash',
+        contents: fullPrompt,
+        config: {
+          systemInstruction: FLEX_AI_SYSTEM_INSTRUCTION,
+          temperature: 0.7,
+        },
+      });
+
+      if (response && response.text) {
+        return response.text.trim();
+      }
+    }
+  } catch (error) {
+    console.error('Gemini API call error:', error);
+  }
+
+  // Graceful intelligent fallback if offline or API key pending
+  if (lower.includes('créateur') || lower.includes('createur') || lower.includes('franck') || lower.includes('alex') || lower.includes('qui t\'a fait') || lower.includes('qui a créé')) {
+    return `Mon créateur est **Franck Alex** (Alex Dioh) ! 🌟🚀\n\nC'est le jeune visionnaire et développeur talentueux qui a imaginé et conçu **Flex Online** de bout en bout. Son objectif a été de créer un réseau social et une messagerie moderne, ultra-rapide, respectueuse de votre vie privée avec chiffrement de bout en bout et fonctionnalités inédites (2 comptes sur 1 téléphone, PC synchronisé, bouclier de sécurité). C'est grâce à son dévouement que Flex Online existe aujourd'hui !`;
+  }
+
+  if (lower.includes('flex online') || lower.includes('appli') || lower.includes('sécurité') || lower.includes('chiffrement') || lower.includes('compte')) {
+    return `**Flex Online** est votre réseau social et messagerie tout-en-un ultra-sécurisée ! 🛡️✨\n\n• **Facilité :** Inscription rapide avec votre numéro et code de confirmation SMS/Email.\n• **Sécurité 5/5 :** Chiffrement de bout en bout, code PIN et clé de récupération d'urgence.\n• **Exclusivité :** 2 comptes sur le même smartphone et synchronisation instantanée avec PC Windows via QR Code.\n• **Communauté :** Fil Flex, stories vibrantes, salons audio et appels vidéo HD limpides.`;
+  }
+
+  return `Bonjour ! Je suis **Flex IA**, l'assistant officiel de Flex Online propulsé par l'intelligence artificielle et créé par Franck Alex. 🤖⚡\n\nJe suis à votre entière disposition pour répondre à toutes vos questions : études, travail, programmation, sciences, vie quotidienne, ou pour tout savoir sur Flex Online et Franck Alex. Que voulez-vous savoir ?`;
+}
 
 // Ensure data folder exists
 if (!fs.existsSync(path.join(process.cwd(), 'data'))) {
@@ -67,6 +163,12 @@ function loadInitialState(): ServerState {
       const cleanMessages: Message[] = (loaded.messages || [...INITIAL_MESSAGES]).filter(
         (m: Message) => !fakeUserIds.includes(m.senderId) && !fakeConvIds.includes(m.conversationId)
       );
+
+      INITIAL_MESSAGES.forEach((defaultMsg) => {
+        if (!cleanMessages.some((m) => m.id === defaultMsg.id)) {
+          cleanMessages.push(defaultMsg);
+        }
+      });
 
       return {
         users: cleanUsers,
@@ -554,6 +656,85 @@ async function startServer() {
                 conversation: conv,
               },
             });
+
+            // Automatic Flex IA Trigger
+            const isAiConv = conv && (
+              conv.id === 'conv-ai-assistant' ||
+              conv.participants.includes('user-flex-ai') ||
+              (newMsg.content && (newMsg.content.toLowerCase().includes('@ia') || newMsg.content.toLowerCase().includes('@flex')))
+            );
+
+            if (isAiConv && newMsg.senderId !== 'user-flex-ai' && newMsg.content) {
+              const currentConv = conv;
+              // Broadcast typing status
+              broadcastAll({
+                type: 'chat:typing',
+                data: {
+                  conversationId: currentConv.id,
+                  senderId: 'user-flex-ai',
+                  isTyping: true,
+                }
+              });
+
+              (async () => {
+                try {
+                  const history = state.messages.filter((m) => m.conversationId === currentConv.id);
+                  const aiReply = await getAiAnswer(newMsg.content, history);
+
+                  const aiMsg: Message = {
+                    id: `msg-ai-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+                    conversationId: currentConv.id,
+                    senderId: 'user-flex-ai',
+                    senderName: 'Flex IA Assistant',
+                    senderAvatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+                    content: aiReply,
+                    type: 'text',
+                    timestamp: new Date().toISOString(),
+                    status: 'delivered',
+                    reactions: [],
+                  };
+
+                  state.messages.push(aiMsg);
+                  currentConv.lastMessage = aiMsg;
+                  currentConv.updatedAt = aiMsg.timestamp;
+                  currentConv.participants.forEach((pId) => {
+                    if (pId !== 'user-flex-ai') {
+                      currentConv.unreadCount[pId] = (currentConv.unreadCount[pId] || 0) + 1;
+                    }
+                  });
+                  persistState();
+
+                  // Stop typing status
+                  broadcastAll({
+                    type: 'chat:typing',
+                    data: {
+                      conversationId: currentConv.id,
+                      senderId: 'user-flex-ai',
+                      isTyping: false,
+                    }
+                  });
+
+                  // Broadcast AI message
+                  broadcastAll({
+                    type: 'chat:message_received',
+                    data: {
+                      message: aiMsg,
+                      conversation: currentConv,
+                    },
+                  });
+                } catch (err) {
+                  console.error('Error in AI auto-reply:', err);
+                  broadcastAll({
+                    type: 'chat:typing',
+                    data: {
+                      conversationId: currentConv.id,
+                      senderId: 'user-flex-ai',
+                      isTyping: false,
+                    }
+                  });
+                }
+              })();
+            }
             break;
           }
 
@@ -803,6 +984,30 @@ async function startServer() {
 
   app.get('/api/state', (_req, res) => {
     res.json(state);
+  });
+
+  // Dedicated AI Query Endpoint (Gemini 3.8 Flash)
+  app.post('/api/ai/ask', async (req, res) => {
+    try {
+      const { prompt, conversationId } = req.body;
+      if (!prompt || typeof prompt !== 'string') {
+        return res.status(400).json({ error: 'Un message ou une question est requise.' });
+      }
+
+      const history = conversationId 
+        ? state.messages.filter((m) => m.conversationId === conversationId)
+        : [];
+
+      const answer = await getAiAnswer(prompt, history);
+      res.json({
+        answer,
+        creator: 'Franck Alex',
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err: any) {
+      console.error('API /api/ai/ask error:', err);
+      res.status(500).json({ error: 'Erreur lors de la génération de la réponse IA.' });
+    }
   });
 
   // Export full backup for changing phones / offline preservation

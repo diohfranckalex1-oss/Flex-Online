@@ -22,8 +22,8 @@
     letter-spacing: -0.01em;
     user-select: none;
     -webkit-user-select: none;
-    background-color: #0c0f12;
-    color: #f1f5f9;
+    background-color: #121622;
+    color: #f8fafc;
   }
 
   /* Critical for mobile: prevent auto-zoom in mobile Safari / Chrome when focusing inputs */
@@ -56,6 +56,79 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(148, 163, 184, 0.45);
+}
+
+/* Refined Dark Theme Overrides (Teinte Ardoise Douce - Atténuation de l'éclat du noir & confort visuel) */
+html:not(.light-theme) body {
+  background-color: #121622 !important;
+  color: #f8fafc !important;
+}
+
+html:not(.light-theme) .bg-neutral-950 {
+  background-color: #131722 !important;
+}
+
+html:not(.light-theme) .bg-neutral-950\/95,
+html:not(.light-theme) .bg-neutral-950\/90,
+html:not(.light-theme) .bg-neutral-950\/80,
+html:not(.light-theme) .bg-neutral-950\/70,
+html:not(.light-theme) .bg-neutral-950\/60 {
+  background-color: rgba(19, 23, 34, 0.95) !important;
+}
+
+html:not(.light-theme) .bg-neutral-900 {
+  background-color: #1a1f2d !important;
+}
+
+html:not(.light-theme) .bg-neutral-900\/95,
+html:not(.light-theme) .bg-neutral-900\/90,
+html:not(.light-theme) .bg-neutral-900\/80,
+html:not(.light-theme) .bg-neutral-900\/60 {
+  background-color: rgba(26, 31, 45, 0.95) !important;
+}
+
+html:not(.light-theme) .bg-neutral-800 {
+  background-color: #23293a !important;
+}
+
+html:not(.light-theme) .bg-neutral-800\/80,
+html:not(.light-theme) .bg-neutral-800\/60,
+html:not(.light-theme) .bg-neutral-800\/50,
+html:not(.light-theme) .bg-neutral-800\/40 {
+  background-color: rgba(35, 41, 58, 0.8) !important;
+}
+
+html:not(.light-theme) .border-neutral-800,
+html:not(.light-theme) .border-neutral-800\/80,
+html:not(.light-theme) .border-neutral-800\/60,
+html:not(.light-theme) .border-neutral-800\/50,
+html:not(.light-theme) .border-neutral-800\/40 {
+  border-color: #283044 !important;
+}
+
+html:not(.light-theme) .border-neutral-700,
+html:not(.light-theme) .border-neutral-700\/80 {
+  border-color: #353f58 !important;
+}
+
+html:not(.light-theme) .border-violet-950\/40,
+html:not(.light-theme) .border-violet-950\/60,
+html:not(.light-theme) .border-violet-950\/80 {
+  border-color: rgba(139, 92, 246, 0.22) !important;
+}
+
+html:not(.light-theme) .bg-black\/80,
+html:not(.light-theme) .bg-black\/70,
+html:not(.light-theme) .bg-black\/60 {
+  background-color: rgba(13, 16, 25, 0.76) !important;
+}
+
+html:not(.light-theme) .text-neutral-400 {
+  color: #94a3b8 !important;
+}
+
+html:not(.light-theme) .text-neutral-500 {
+  color: #64748b !important;
 }
 
 /* Light Theme Overrides (Teint Blanc Lumineux - Écritures Parfaitement Lisibles et Nettes) */

@@ -23,7 +23,8 @@ import {
   X,
   Palette,
   ArrowDown,
-  ArrowUp
+  ArrowUp,
+  Bot
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { User, Message } from '../../types';
@@ -157,6 +158,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onBack }) => {
   const title = isGroup ? selectedConversation.name : directContact?.name || 'Contact';
   const avatar = isGroup ? selectedConversation.avatar : directContact?.avatar;
   const isOnline = directContact?.status === 'online';
+  const isAiChat = directContact?.id === 'user-flex-ai' || selectedConversation.id === 'conv-ai-assistant';
   const typingUsers = typingMap[selectedConversation.id] || [];
   const isTyping = typingUsers.length > 0;
 
@@ -356,18 +358,25 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onBack }) => {
           >
             <h2 className="text-base sm:text-lg font-black text-white truncate flex items-center gap-1.5">
               <span>{title}</span>
-              {directContact?.verified && (
+              {isAiChat ? (
+                <span className="text-[10px] bg-gradient-to-r from-violet-600 to-indigo-600 text-white px-2 py-0.5 rounded-full font-black shadow-xs flex items-center gap-1">
+                  <Sparkles className="w-2.5 h-2.5 text-amber-300" />
+                  <span>IA Officielle</span>
+                </span>
+              ) : directContact?.verified ? (
                 <span className="text-[11px] bg-violet-500/20 text-violet-300 border border-violet-500/30 px-1.5 py-0.2 rounded-md font-bold">
                   ✓ Vérifié
                 </span>
-              )}
+              ) : null}
             </h2>
             <p className="text-xs text-neutral-300 truncate flex items-center gap-1.5">
               {isTyping ? (
                 <span className="text-violet-400 font-semibold animate-pulse flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
-                  écrit...
+                  {isAiChat ? 'Flex IA formule sa réponse...' : 'écrit...'}
                 </span>
+              ) : isAiChat ? (
+                <span className="text-violet-300 font-semibold">Créée par Franck Alex • Répond à tout 24/7</span>
               ) : isGroup ? (
                 `${selectedConversation.participants.length} membres actifs`
               ) : isOnline ? (
@@ -381,7 +390,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onBack }) => {
 
         {/* Header Call Actions */}
         <div className="flex items-center gap-1">
-          {directContact && (
+          {directContact && !isAiChat && (
             <>
               <button
                 id="btn-call-audio"
@@ -798,6 +807,39 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onBack }) => {
         </div>
       ) : (
         <div className="shrink-0 sticky bottom-0 z-20 bg-neutral-900/95 backdrop-blur-md border-t border-neutral-800 safe-area-bottom px-2.5 sm:px-5 py-2 sm:py-3 w-full max-w-full box-border">
+          {/* Quick Suggestions for Flex IA Assistant */}
+          {isAiChat && (
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-2 mb-1 scrollbar-none max-w-4xl mx-auto">
+              <span className="text-[10px] font-black uppercase text-violet-400 shrink-0 flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-amber-400" />
+                <span>Suggestions :</span>
+              </span>
+              {[
+                'Qui est Franck Alex ?',
+                'Comment fonctionne la sécurité ?',
+                'Explique le mode 2 comptes',
+                'Synchroniser mon PC Windows',
+                'Rédige un message percutant',
+                'Pose-moi une question'
+              ].map((sug, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => {
+                    sendMessage({
+                      conversationId: selectedConversation.id,
+                      content: sug,
+                      type: 'text',
+                    });
+                  }}
+                  className="shrink-0 px-2.5 py-1 rounded-full bg-violet-950/70 hover:bg-violet-900 border border-violet-800/60 text-[11px] text-violet-200 hover:text-white transition font-medium active:scale-95"
+                >
+                  {sug}
+                </button>
+              ))}
+            </div>
+          )}
+
           <form
             onSubmit={handleSendText}
             className="flex items-center gap-2 sm:gap-3 w-full max-w-4xl mx-auto"
@@ -834,7 +876,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({ onBack }) => {
               {/* Text Input - with minWidth: 0 to guarantee it never pushes the mic out */}
               <input
                 type="text"
-                placeholder="Message..."
+                placeholder={isAiChat ? "Posez n'importe quelle question sur Franck Alex, Flex Online ou tout sujet..." : "Message..."}
                 value={textInput}
                 onChange={handleInputChange}
                 style={{ minWidth: 0 }}

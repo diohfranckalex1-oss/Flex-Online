@@ -1,15 +1,20 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { 
   MessageSquare, 
   Compass, 
   Settings, 
   Eye,
   Sun,
-  Moon
+  Moon,
+  Film,
+  Bot,
+  Sparkles
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { FlexLogo } from './common/FlexLogo';
 import { PWAInstallButton } from './pwa/PWAInstallButton';
+import { FlexCommercialModal } from './promo/FlexCommercialModal';
+import { FlexAiModal } from './ai/FlexAiModal';
 
 export const Header: React.FC = () => {
   const { 
@@ -26,6 +31,8 @@ export const Header: React.FC = () => {
   } = useApp();
 
   const scrollNavRef = useRef<HTMLDivElement>(null);
+  const [isCommercialOpen, setIsCommercialOpen] = useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
 
   // Total unread messages count across all conversations
   const totalUnread = conversations.reduce(
@@ -101,6 +108,18 @@ export const Header: React.FC = () => {
               )}
             </button>
 
+            {/* Item 3: Flex IA Assistant (Assistant intelligent Gemini 3.8) */}
+            <button
+              id="nav-tab-flex-ia"
+              onClick={() => setIsAiModalOpen(true)}
+              className="shrink-0 px-3.5 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-1.5 bg-gradient-to-r from-violet-600/30 to-indigo-600/30 hover:from-violet-600/60 hover:to-indigo-600/60 text-violet-200 hover:text-white border border-violet-500/50 transition-all active:scale-95 group shadow-sm shadow-violet-950/40"
+              title="Poser une question à Flex IA (questions de tout genre, sur l'appli ou sur son créateur Franck Alex)"
+            >
+              <Bot className="w-4 h-4 text-violet-300 group-hover:rotate-12 transition-transform" />
+              <span className="whitespace-nowrap">Flex IA</span>
+              <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+            </button>
+
             {/* Item 3: LA SEULE ET UNIQUE PHOTO DE PROFIL (S'ouvre en HD en un clic) */}
             <button
               id="nav-tab-my-profile-photo"
@@ -128,7 +147,19 @@ export const Header: React.FC = () => {
               </div>
             </button>
 
-            {/* Item 4: LE CENTRE UNIQUE DE PARAMÈTRES (Contient tout : 2ème compte, PC, Guide, Sécurité, Blocage) */}
+            {/* Item 4: SPOT PUBLICITAIRE OFFICIEL 35s */}
+            <button
+              id="nav-btn-commercial"
+              onClick={() => setIsCommercialOpen(true)}
+              className="shrink-0 px-3 py-1.5 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-1.5 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-md shadow-violet-950/60 border border-violet-400/40 transition-all active:scale-95 group"
+              title="Regarder le spot publicitaire officiel de Flex Online (35s 4K)"
+            >
+              <Film className="w-3.5 h-3.5 text-violet-200 group-hover:rotate-12 transition-transform" />
+              <span className="whitespace-nowrap">Pub 35s</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            </button>
+
+            {/* Item 5: LE CENTRE UNIQUE DE PARAMÈTRES (Contient tout : 2ème compte, PC, Guide, Sécurité, Blocage) */}
             <button
               id="nav-btn-settings"
               onClick={() => setIsSettingsModalOpen(true)}
@@ -159,7 +190,7 @@ export const Header: React.FC = () => {
               )}
             </button>
 
-            {/* Item 5: INSTALL PWA BUTTON (Disparaît automatiquement dès que l'application est téléchargée) */}
+            {/* Item 6: INSTALL PWA BUTTON (Disparaît automatiquement dès que l'application est téléchargée) */}
             <div className="shrink-0">
               <PWAInstallButton variant="compact" />
             </div>
@@ -167,6 +198,18 @@ export const Header: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 35s Official Commercial Video Modal */}
+      <FlexCommercialModal
+        isOpen={isCommercialOpen}
+        onClose={() => setIsCommercialOpen(false)}
+      />
+
+      {/* Flex IA Assistant Modal (Gemini 3.8 Flash) */}
+      <FlexAiModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+      />
     </header>
   );
 };

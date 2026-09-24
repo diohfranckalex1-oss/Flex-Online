@@ -3,10 +3,10 @@ import { ChatWallpaper } from '../types';
 export const DEFAULT_WALLPAPERS: ChatWallpaper[] = [
   {
     id: 'flex-dark',
-    name: 'Flex Nuit Noir',
+    name: 'Flex Nuit Douce',
     type: 'color',
-    value: '#0c1117',
-    previewColor: '#0c1117'
+    value: '#131722',
+    previewColor: '#131722'
   },
   {
     id: 'flex-light',
@@ -16,32 +16,32 @@ export const DEFAULT_WALLPAPERS: ChatWallpaper[] = [
     previewColor: '#f8fafc'
   },
   {
-    id: 'pure-black',
-    name: 'Noir Absolu OLED',
+    id: 'slate-night',
+    name: 'Bleu Ardoise Nuit',
     type: 'color',
-    value: '#000000',
-    previewColor: '#000000'
+    value: '#181e2b',
+    previewColor: '#181e2b'
   },
   {
     id: 'violet-nebula',
-    name: 'Nébuleuse Violette',
+    name: 'Nébuleuse Douce',
     type: 'gradient',
-    value: 'linear-gradient(135deg, #1b0c33 0%, #0d061a 50%, #06030c 100%)',
-    previewColor: '#1b0c33'
+    value: 'linear-gradient(135deg, #24143d 0%, #171b29 50%, #121622 100%)',
+    previewColor: '#24143d'
   },
   {
     id: 'deep-ocean',
-    name: 'Bleu Océan Profond',
+    name: 'Bleu Océan Doux',
     type: 'gradient',
-    value: 'linear-gradient(135deg, #0a192f 0%, #050d1a 50%, #02060d 100%)',
-    previewColor: '#0a192f'
+    value: 'linear-gradient(135deg, #14243b 0%, #121d2f 50%, #111724 100%)',
+    previewColor: '#14243b'
   },
   {
     id: 'emerald-peace',
     name: 'Forêt Émeraude Paisible',
     type: 'gradient',
-    value: 'linear-gradient(135deg, #062b1b 0%, #03170e 50%, #020d08 100%)',
-    previewColor: '#062b1b'
+    value: 'linear-gradient(135deg, #0d3322 0%, #11221c 50%, #111822 100%)',
+    previewColor: '#0d3322'
   },
   {
     id: 'sunset-amber',

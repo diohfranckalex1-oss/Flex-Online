@@ -24,7 +24,8 @@ import {
   CheckSquare,
   Square,
   MoreVertical,
-  ShieldAlert
+  ShieldAlert,
+  Bot
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Conversation, User } from '../../types';
@@ -429,6 +430,38 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
 
           {/* Conversations List */}
           <div className="flex-1 overflow-y-auto divide-y divide-neutral-800/40">
+            {/* Quick Flex IA Assistant Shortcut Banner */}
+            <div 
+              onClick={() => {
+                const aiConv = sortedConversations.find(c => c.id === 'conv-ai-assistant' || c.participants.includes('user-flex-ai'));
+                if (aiConv) {
+                  setSelectedConversationId(aiConv.id);
+                  if (onSelectChat) onSelectChat();
+                }
+              }}
+              className="p-3 mx-2 my-2 rounded-2xl bg-gradient-to-r from-violet-950/80 via-indigo-950/60 to-purple-950/80 border border-violet-700/50 hover:border-violet-400 cursor-pointer transition-all shadow-md group flex items-center justify-between"
+            >
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+                  <Bot className="w-5 h-5" />
+                </div>
+                <div className="truncate">
+                  <div className="flex items-center gap-1.5">
+                    <h4 className="text-xs font-black text-white">Flex IA Assistant</h4>
+                    <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/40">
+                      OFFICIEL
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-neutral-400 truncate">
+                    Posez vos questions sur Franck Alex, Flex Online ou tout sujet !
+                  </p>
+                </div>
+              </div>
+              <span className="shrink-0 text-violet-300 text-xs font-bold px-2.5 py-1 rounded-xl bg-violet-900/60 group-hover:bg-violet-800 transition">
+                ⚡ Discuter
+              </span>
+            </div>
+
             {sortedConversations.length === 0 ? (
               <div className="p-8 text-center text-neutral-500">
                 <p className="text-sm font-semibold mb-1">Aucune discussion trouvée</p>
@@ -535,6 +568,12 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                           }`}>
                             {title}
                           </h3>
+                          {contact?.id === 'user-flex-ai' && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xs flex items-center gap-1 shrink-0">
+                              <Sparkles className="w-2.5 h-2.5 text-amber-300" />
+                              <span>IA Officielle</span>
+                            </span>
+                          )}
                           {isPinned && (
                             <Pin className="w-3.5 h-3.5 text-violet-400 fill-violet-400/30 shrink-0" />
                           )}

@@ -52,18 +52,41 @@ export const FLEX_SUPPORT: User = {
   createdAt: new Date().toISOString(),
 };
 
+export const FLEX_AI: User = {
+  id: 'user-flex-ai',
+  name: 'Flex IA Assistant',
+  username: 'flex_ai',
+  avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+  bio: 'Intelligence Artificielle officielle de Flex Online ⚡ Posez-moi toutes vos questions sur la vie, le travail, l\'application ou son créateur Franck Alex !',
+  phone: '+33 8 00 77 77 77',
+  email: 'ai@flexonline.network',
+  status: 'online',
+  lastSeen: 'Toujours disponible ⚡',
+  verified: true,
+  createdAt: new Date().toISOString(),
+};
+
 export const AVAILABLE_USERS: User[] = [
   CURRENT_USER,
+  FLEX_AI,
   FLEX_SUPPORT,
 ];
 
 export const INITIAL_CONVERSATIONS: Conversation[] = [
   {
+    id: 'conv-ai-assistant',
+    type: 'direct',
+    participants: ['user-franck', 'user-flex-ai'],
+    unreadCount: { 'user-franck': 0 },
+    updatedAt: new Date().toISOString(),
+    pinned: true,
+  },
+  {
     id: 'conv-support',
     type: 'direct',
     participants: ['user-franck', 'user-flex-support'],
     unreadCount: { 'user-franck': 1 },
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
     pinned: true,
   },
   {
@@ -72,7 +95,7 @@ export const INITIAL_CONVERSATIONS: Conversation[] = [
     name: 'Communauté Flex Online 🌟',
     avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
     description: 'Canal officiel des membres vérifiés Flex Online : échangez, partagez vos idées et vos projets en direct.',
-    participants: ['user-franck', 'user-flex-support'],
+    participants: ['user-franck', 'user-flex-support', 'user-flex-ai'],
     unreadCount: { 'user-franck': 0 },
     updatedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
     pinned: true,
@@ -80,6 +103,18 @@ export const INITIAL_CONVERSATIONS: Conversation[] = [
 ];
 
 export const INITIAL_MESSAGES: Message[] = [
+  {
+    id: 'msg-welcome-ai-1',
+    conversationId: 'conv-ai-assistant',
+    senderId: 'user-flex-ai',
+    senderName: 'Flex IA Assistant',
+    senderAvatar: FLEX_AI.avatar,
+    content: `Bonjour ! 👋 Je suis l'Intelligence Artificielle officielle de Flex Online.\n\nPosez-moi n'importe quelle question :\n• 🌟 Sur mon créateur : Franck Alex (sa vision, comment il a créé l'application...)\n• 📱 Sur Flex Online : le chiffrement, les 2 comptes, la synchronisation PC...\n• 💡 Sur tout autre sujet : travail, sciences, études, conseils, rédaction, code, actualités...\n\nComment puis-je vous aider aujourd'hui ?`,
+    type: 'text',
+    timestamp: new Date().toISOString(),
+    status: 'delivered',
+    reactions: [{ emoji: '🤖', userId: 'user-flex-ai', userName: 'Flex IA' }],
+  },
   {
     id: 'msg-welcome-support-1',
     conversationId: 'conv-support',
