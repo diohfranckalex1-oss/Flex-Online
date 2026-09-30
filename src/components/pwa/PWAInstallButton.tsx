@@ -53,8 +53,8 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
 
   if (installedSuccess) {
     return (
-      <div className="shrink-0 flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-violet-300 bg-violet-950/80 border border-violet-800/60 rounded-full animate-fade-in">
-        <CheckCircle className="w-3.5 h-3.5 text-violet-400" />
+      <div className="shrink-0 flex items-center gap-1.5 px-3 py-1 text-xs font-bold text-teal-300 bg-teal-950/80 border border-teal-800/60 rounded-full animate-fade-in">
+        <CheckCircle className="w-3.5 h-3.5 text-teal-400" />
         <span>Application installée !</span>
       </div>
     );
@@ -67,12 +67,12 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
           id="btn-install-pwa-compact"
           onClick={handleInstallClick}
           title="Installer Flex Online sur votre PC ou téléphone"
-          className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-black text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 rounded-2xl shadow-md shadow-violet-950/50 transition-all active:scale-95 border border-violet-400/40 ${className}`}
+          className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 text-xs font-black text-white bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:from-teal-600 hover:to-emerald-500 rounded-2xl shadow-md shadow-teal-950/50 transition-all active:scale-95 border border-teal-400/40 ${className}`}
         >
           {isDesktop ? (
-            <Monitor className="w-3.5 h-3.5 shrink-0 text-violet-200" />
+            <Monitor className="w-3.5 h-3.5 shrink-0 text-teal-200" />
           ) : (
-            <Smartphone className="w-3.5 h-3.5 shrink-0 text-violet-200" />
+            <Smartphone className="w-3.5 h-3.5 shrink-0 text-teal-200" />
           )}
           <span className="whitespace-nowrap hidden sm:inline">Installer l'app</span>
           <span className="whitespace-nowrap sm:hidden">Installer</span>
@@ -83,7 +83,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
         <button
           id="btn-install-pwa-full"
           onClick={handleInstallClick}
-          className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-violet-600 to-indigo-600 text-white rounded-xl text-xs font-bold shadow-md hover:from-violet-500 hover:to-indigo-500 transition-all active:scale-98 ${className}`}
+          className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] text-white rounded-xl text-xs font-bold shadow-md hover:from-teal-600 hover:to-emerald-500 transition-all active:scale-98 ${className}`}
         >
           <Download className="w-4 h-4" />
           <span>Installer l'application Flex Online (PC & Mobile)</span>
@@ -95,7 +95,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-fade-in">
           <div 
             id="pwa-install-guide-modal"
-            className="w-full max-w-md rounded-3xl bg-neutral-900 p-6 shadow-2xl border border-violet-900/60 text-neutral-100 relative"
+            className="w-full max-w-md rounded-3xl bg-neutral-900 p-6 shadow-2xl border border-teal-700/60 text-neutral-100 relative"
           >
             <button
               onClick={() => setShowGuide(false)}
@@ -105,7 +105,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
             </button>
 
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-violet-950/80 border border-violet-700/60 text-violet-300 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-2xl bg-teal-950/80 border border-teal-700/60 text-teal-300 flex items-center justify-center">
                 {activeTab === 'pc' ? <Monitor className="w-6 h-6" /> : <Smartphone className="w-6 h-6" />}
               </div>
               <div>
@@ -135,7 +135,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                     : 'text-neutral-400 hover:text-neutral-200'
                 }`}
               >
-                <Smartphone className="w-3.5 h-3.5 text-indigo-400" />
+                <Smartphone className="w-3.5 h-3.5 text-teal-400" />
                 <span>Sur Téléphone</span>
               </button>
             </div>
@@ -163,7 +163,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
 
                 <div className="bg-neutral-950/60 p-3.5 rounded-2xl border border-neutral-800 space-y-3">
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                    <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                       1
                     </div>
                     <div className="pt-0.5">
@@ -172,20 +172,20 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                    <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                       2
                     </div>
                     <div className="pt-0.5">
                       Cliquez sur la petite icône avec un écran et une flèche :{' '}
-                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-neutral-800 text-violet-300 rounded font-semibold border border-neutral-700">
-                        <Download className="w-3 h-3 text-violet-400" />
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-neutral-800 text-teal-300 rounded font-semibold border border-neutral-700">
+                        <Download className="w-3 h-3 text-teal-400" />
                         Installer Flex Online
                       </span>
                     </div>
                   </div>
 
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                    <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                       3
                     </div>
                     <div className="pt-0.5">
@@ -204,34 +204,34 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
             {activeTab === 'mobile' && (
               <div className="space-y-3 text-xs text-neutral-300 bg-neutral-950/60 p-4 rounded-2xl border border-neutral-800 mb-5">
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                  <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                     1
                   </div>
                   <div className="pt-0.5">
                     Sur <strong>iPhone / iPad</strong> : appuyez sur le bouton <strong>Partager</strong>{' '}
-                    <Share2 className="w-3.5 h-3.5 inline text-violet-400 ml-0.5" /> dans la barre Safari (en bas ou en haut).
+                    <Share2 className="w-3.5 h-3.5 inline text-teal-400 ml-0.5" /> dans la barre Safari (en bas ou en haut).
                     <br />
                     Sur <strong>Android</strong> : appuyez sur les <strong>3 points (⋮)</strong> en haut à droite de Google Chrome.
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                  <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                     2
                   </div>
                   <div className="pt-0.5">
                     Faites défiler vers le bas et appuyez sur{' '}
                     <strong className="text-white">« Sur l'écran d'accueil »</strong> ou <strong className="text-white">« Installer l'application »</strong>{' '}
-                    <PlusSquare className="w-3.5 h-3.5 inline text-violet-400 ml-0.5" />.
+                    <PlusSquare className="w-3.5 h-3.5 inline text-teal-400 ml-0.5" />.
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-violet-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
+                  <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold shrink-0 text-[11px]">
                     3
                   </div>
                   <div className="pt-0.5">
-                    Appuyez sur <strong>Ajouter</strong> (ou Installer). Le logo violet Flex Online apparaîtra directement sur l'écran d'accueil de votre téléphone comme une véritable application mobile !
+                    Appuyez sur <strong>Ajouter</strong> (ou Installer). Le logo officiel Flex Online apparaîtra directement sur l'écran d'accueil de votre téléphone comme une véritable application mobile !
                   </div>
                 </div>
               </div>
@@ -247,7 +247,7 @@ export const PWAInstallButton: React.FC<PWAInstallButtonProps> = ({
               {activeTab === 'pc' && (
                 <button
                   onClick={handleOpenInNewTab}
-                  className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-violet-600 py-2.5 text-xs font-bold text-white hover:bg-violet-500 transition shadow-md shadow-violet-900/40"
+                  className="flex-1 flex items-center justify-center gap-1.5 rounded-xl bg-teal-600 py-2.5 text-xs font-bold text-white hover:bg-teal-500 transition shadow-md shadow-teal-950/40"
                 >
                   <span>Ouvrir en grand</span>
                   <ArrowRight className="w-3.5 h-3.5" />

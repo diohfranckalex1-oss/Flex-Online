@@ -152,7 +152,7 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
           }}
           className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all ${
             activeTab === 'display'
-              ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-950/60'
+              ? 'bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] text-white shadow-md shadow-teal-950/60'
               : 'text-neutral-400 hover:text-white'
           }`}
         >
@@ -167,7 +167,7 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
           }}
           className={`flex-1 py-2.5 px-3 rounded-xl text-xs sm:text-sm font-black flex items-center justify-center gap-2 transition-all ${
             activeTab === 'scan'
-              ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-violet-950/60'
+              ? 'bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] text-white shadow-md shadow-teal-950/60'
               : 'text-neutral-400 hover:text-white'
           }`}
         >
@@ -182,8 +182,8 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
       {activeTab === 'display' && (
         <div className="flex flex-col items-center text-center space-y-4 animate-fade-in">
           <div className="flex items-center justify-between w-full px-1">
-            <span className="text-xs font-bold text-violet-300 flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-violet-400" />
+            <span className="text-xs font-bold text-teal-300 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-teal-400" />
               <span>QR Code officiel crypté & haute résolution</span>
             </span>
 
@@ -208,7 +208,7 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
           </div>
 
           {/* QR Code Graphic Frame */}
-          <div className="relative p-4 sm:p-5 bg-white rounded-3xl shadow-2xl shadow-violet-950/40 border-4 border-violet-500/40 flex items-center justify-center transition-transform hover:scale-[1.02]">
+          <div className="relative p-4 sm:p-5 bg-white rounded-3xl shadow-2xl shadow-teal-950/40 border-4 border-teal-500/40 flex items-center justify-center transition-transform hover:scale-[1.02]">
             {qrDataUrl ? (
               <div className="relative">
                 <img
@@ -219,8 +219,8 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
                 
                 {/* Brand Badge in Center of QR */}
                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-neutral-950 border-2 border-violet-500 text-white flex flex-col items-center justify-center shadow-2xl p-0.5">
-                    <span className="text-[10px] font-black tracking-tight text-violet-400">FLEX</span>
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-neutral-950 border-2 border-teal-500 text-white flex flex-col items-center justify-center shadow-2xl p-0.5">
+                    <span className="text-[10px] font-black tracking-tight text-teal-400">FLEX</span>
                     <span className="text-[8px] font-bold text-white uppercase leading-none">Online</span>
                   </div>
                 </div>
@@ -243,12 +243,12 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
                 Code de jumelage manuel :
               </span>
               <div className="flex items-center gap-2">
-                <span className="px-3 py-1.5 bg-neutral-950 border border-violet-900/60 rounded-xl font-mono text-sm sm:text-base font-black text-violet-300 tracking-wider">
+                <span className="px-3 py-1.5 bg-neutral-950 border border-teal-900/60 rounded-xl font-mono text-sm sm:text-base font-black text-teal-300 tracking-wider">
                   {pairingSessionId}
                 </span>
                 <button
                   onClick={handleCopyCode}
-                  className="px-3 py-1.5 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow-sm"
+                  className="px-3 py-1.5 bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 text-white text-xs font-bold rounded-xl transition flex items-center gap-1 shadow-sm"
                   title="Copier le code de jumelage"
                 >
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
@@ -262,7 +262,7 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
                 onClick={handleDownloadQr}
                 className="px-3 py-1.5 bg-neutral-800 hover:bg-neutral-700 text-neutral-200 hover:text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5"
               >
-                <Download className="w-3.5 h-3.5 text-violet-400" />
+                <Download className="w-3.5 h-3.5 text-teal-400" />
                 <span>Télécharger l'image PNG</span>
               </button>
 
@@ -308,7 +308,7 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
           ) : (
             <>
               {/* Camera Scanner Viewfinder */}
-              <div className="relative w-full max-w-xs sm:max-w-sm aspect-square bg-neutral-950 rounded-3xl overflow-hidden border-2 border-violet-500/60 shadow-2xl flex items-center justify-center group">
+              <div className="relative w-full max-w-xs sm:max-w-sm aspect-square bg-neutral-950 rounded-3xl overflow-hidden border-2 border-teal-500/60 shadow-2xl flex items-center justify-center group">
                 <video
                   ref={videoRef}
                   playsInline
@@ -319,13 +319,13 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
 
                 {!cameraActive && (
                   <div className="p-6 text-center space-y-3">
-                    <Camera className="w-12 h-12 text-violet-400 mx-auto animate-pulse" />
+                    <Camera className="w-12 h-12 text-teal-400 mx-auto animate-pulse" />
                     <p className="text-xs text-neutral-400">
                       {cameraError || "Activation de la caméra en cours..."}
                     </p>
                     <button
                       onClick={startCamera}
-                      className="px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold rounded-xl transition"
+                      className="px-4 py-2 bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 text-white text-xs font-bold rounded-xl transition"
                     >
                       Réessayer la caméra
                     </button>
@@ -337,17 +337,17 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
                   <div className="absolute inset-0 pointer-events-none p-6 flex flex-col justify-between">
                     {/* Top corners */}
                     <div className="flex justify-between">
-                      <div className="w-8 h-8 border-t-4 border-l-4 border-violet-400 rounded-tl-xl" />
-                      <div className="w-8 h-8 border-t-4 border-r-4 border-violet-400 rounded-tr-xl" />
+                      <div className="w-8 h-8 border-t-4 border-l-4 border-teal-400 rounded-tl-xl" />
+                      <div className="w-8 h-8 border-t-4 border-r-4 border-teal-400 rounded-tr-xl" />
                     </div>
 
                     {/* Animated Neon Laser Scan Line */}
-                    <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-violet-400 to-transparent shadow-lg shadow-violet-500 animate-bounce" />
+                    <div className="w-full h-0.5 bg-gradient-to-r from-transparent via-teal-400 to-transparent shadow-lg shadow-teal-500 animate-bounce" />
 
                     {/* Bottom corners */}
                     <div className="flex justify-between">
-                      <div className="w-8 h-8 border-b-4 border-l-4 border-violet-400 rounded-bl-xl" />
-                      <div className="w-8 h-8 border-b-4 border-r-4 border-violet-400 rounded-br-xl" />
+                      <div className="w-8 h-8 border-b-4 border-l-4 border-teal-400 rounded-bl-xl" />
+                      <div className="w-8 h-8 border-b-4 border-r-4 border-teal-400 rounded-br-xl" />
                     </div>
                   </div>
                 )}
@@ -367,13 +367,13 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
                   onClick={() => fileInputRef.current?.click()}
                   className="px-3.5 py-2 bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-neutral-300 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition"
                 >
-                  <Upload className="w-4 h-4 text-violet-400" />
+                  <Upload className="w-4 h-4 text-teal-400" />
                   <span>Importer photo QR</span>
                 </button>
 
                 <button
                   onClick={() => handleSimulateOrValidateScan(`FLX-${Math.floor(1000 + Math.random() * 9000)}`)}
-                  className="px-3.5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
+                  className="px-3.5 py-2 bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition shadow-sm"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>Valider le scan</span>
@@ -401,7 +401,7 @@ export const FlexQRCodeScanner: React.FC<FlexQRCodeScannerProps> = ({ onSuccessP
                       }
                     }}
                     disabled={!manualCodeInput.trim()}
-                    className="px-3 py-1.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-40 text-white rounded-xl text-xs font-bold transition"
+                    className="px-3 py-1.5 bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 disabled:opacity-40 text-white rounded-xl text-xs font-bold transition"
                   >
                     Lier
                   </button>

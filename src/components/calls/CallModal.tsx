@@ -319,15 +319,44 @@ export const CallModal: React.FC = () => {
 
               {/* Audio Waveform Effect when Connected */}
               {isConnected && (
-                <div className="flex items-center gap-1 mt-2 px-3 py-1.5 rounded-full bg-neutral-950 border border-neutral-800">
-                  <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
-                  <span className="text-xs font-semibold text-emerald-400">Ligne active</span>
-                  <div className="flex items-center gap-0.5 ml-2">
-                    <span className="w-1 h-3 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-1 h-5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-1 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                    <span className="w-1 h-4 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '450ms' }} />
+                <div className="flex flex-col items-center gap-2 mt-2">
+                  <div className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-neutral-950 border border-neutral-800">
+                    <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                    <span className="text-xs font-semibold text-emerald-400">Ligne active</span>
+                    <div className="flex items-center gap-0.5 ml-2">
+                      <span className="w-1 h-3 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <span className="w-1 h-5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <span className="w-1 h-2 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <span className="w-1 h-4 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '450ms' }} />
+                    </div>
                   </div>
+
+                  {/* Penpal voice interaction button */}
+                  {partner.id.startsWith('penpal-') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                          window.speechSynthesis.cancel();
+                          const phrases = [
+                            `C'est un vrai plaisir de discuter avec toi ! Chez moi à ${partner.country || 'l\'étranger'}, nous aimons beaucoup la convivialité et la lecture.`,
+                            `Tu as vu le roman Ceux qu'on n'entend pas de Dioh Franck Alex sur Flex Library ? Une merveille d'inspiration !`,
+                            `Dis-moi, quelle langue aimerais-tu apprendre avec moi ? Je peux t'aider avec plaisir !`,
+                            `Merci pour cet appel, c'est génial de pouvoir s'appeler partout dans le monde sur Flex !`
+                          ];
+                          const selectedPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+                          const utter = new SpeechSynthesisUtterance(selectedPhrase);
+                          utter.lang = 'fr-FR';
+                          utter.rate = 0.95;
+                          window.speechSynthesis.speak(utter);
+                        }
+                      }}
+                      className="px-3 py-1.5 bg-teal-950/80 hover:bg-teal-900 border border-teal-600/50 text-teal-300 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-sm active:scale-95 cursor-pointer mt-1"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+                      <span>Écouter {partner.name.split(' ')[0]} parler 🔊</span>
+                    </button>
+                  )}
                 </div>
               )}
 

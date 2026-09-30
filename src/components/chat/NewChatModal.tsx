@@ -72,7 +72,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({ isOpen, onClose }) =
         {/* Header */}
         <div className="px-5 py-4 border-b border-neutral-800 flex items-center justify-between bg-neutral-950/60">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-indigo-950 text-cyan-400 flex items-center justify-center font-bold text-sm border border-indigo-800/60">
+            <div className="w-8 h-8 rounded-xl bg-teal-950 text-teal-300 flex items-center justify-center font-bold text-sm border border-teal-800/60">
               <MessageSquarePlus className="w-4 h-4" />
             </div>
             <h2 className="text-base font-black text-white">
@@ -134,7 +134,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({ isOpen, onClose }) =
                 placeholder="Ex: Le Cercle, Famille, Studio..."
                 value={groupName}
                 onChange={(e) => setGroupName(e.target.value)}
-                className="w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-indigo-500"
+                className="w-full px-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-xl text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
               />
             </div>
           )}
@@ -146,7 +146,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({ isOpen, onClose }) =
               placeholder={tab === 'phone' ? "Chercher par nom ou numéro..." : "Chercher un ami par nom ou pseudo..."}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-indigo-500"
+              className="w-full px-3.5 py-2 bg-neutral-950 border border-neutral-800 rounded-xl text-xs text-white placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
             />
           </div>
 
@@ -236,7 +236,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({ isOpen, onClose }) =
                     }}
                     className={`flex items-center justify-between p-2.5 rounded-2xl cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-indigo-950/80 border border-indigo-800/80'
+                        ? 'bg-teal-950/80 border border-teal-800/80'
                         : 'hover:bg-neutral-800/60 border border-transparent'
                     }`}
                   >
@@ -276,7 +276,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({ isOpen, onClose }) =
             <button
               onClick={handleCreateGroup}
               disabled={!groupName.trim() || selectedUsers.length === 0}
-              className="w-full py-3 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:from-teal-600 hover:to-emerald-500 disabled:opacity-50 text-white text-xs font-bold transition-all shadow-lg shadow-teal-950/50 flex items-center justify-center gap-2"
             >
               <Users className="w-4 h-4" />
               <span>Créer le groupe ({selectedUsers.length} membres)</span>

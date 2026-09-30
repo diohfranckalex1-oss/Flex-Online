@@ -84,7 +84,7 @@ export const CreatePostBox: React.FC = () => {
           <img
             src={currentUser.avatar}
             alt={currentUser.name}
-            className="w-10 h-10 rounded-2xl object-cover ring-1 ring-indigo-500/50 shrink-0 mt-0.5"
+            className="w-10 h-10 rounded-2xl object-cover ring-1 ring-teal-500/50 shrink-0 mt-0.5"
           />
 
           <div className="flex-1 min-w-0">
@@ -94,7 +94,7 @@ export const CreatePostBox: React.FC = () => {
                 <div className="flex-1 text-xs">
                   <p className="font-bold text-rose-100">{blockedWarning.reasonTitle}</p>
                   <p className="text-rose-200 mt-0.5">{blockedWarning.explanation}</p>
-                  <p className="text-[11px] text-violet-300 mt-1 italic font-semibold">
+                  <p className="text-[11px] text-teal-300 mt-1 italic font-semibold">
                     ✦ Flex est un espace d'échange respectueux et bienveillant.
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export const CreatePostBox: React.FC = () => {
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder={`Quoi de neuf, ${currentUser.name.split(' ')[0]} ? Exprimez-vous ici...`}
-              className="w-full bg-neutral-950/80 hover:bg-neutral-950 focus:bg-neutral-950 px-3.5 py-2.5 rounded-xl border border-neutral-800 text-xs sm:text-sm text-neutral-100 placeholder-neutral-500 focus:outline-hidden focus:border-indigo-500 transition-colors resize-none"
+              className="w-full bg-neutral-950/80 hover:bg-neutral-950 focus:bg-neutral-950 px-3.5 py-2.5 rounded-xl border border-neutral-800 text-xs sm:text-sm text-neutral-100 placeholder-neutral-500 focus:outline-hidden focus:border-teal-500 transition-colors resize-none"
             />
 
             {/* Media preview if attached inline */}
@@ -182,7 +182,7 @@ export const CreatePostBox: React.FC = () => {
                 </>
               ) : (
                 <>
-                  <Users className="w-3.5 h-3.5 text-indigo-400" />
+                  <Users className="w-3.5 h-3.5 text-teal-400" />
                   <span className="hidden sm:inline">Amis</span>
                 </>
               )}
@@ -193,7 +193,7 @@ export const CreatePostBox: React.FC = () => {
             type="button"
             onClick={() => handlePublish()}
             disabled={!content.trim() && !mediaUrl}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 disabled:opacity-40 disabled:hover:from-violet-600 disabled:hover:to-cyan-500 text-white text-xs font-black transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 disabled:opacity-40 text-white text-xs font-black transition-all shadow-md shadow-teal-950/60 flex items-center gap-1.5 cursor-pointer"
           >
             <Send className="w-3.5 h-3.5" />
             <span>Publier</span>

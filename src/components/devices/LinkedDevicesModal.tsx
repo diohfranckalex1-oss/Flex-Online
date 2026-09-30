@@ -134,14 +134,14 @@ export const LinkedDevicesModal: React.FC<LinkedDevicesModalProps> = ({ isOpen, 
       <div className="bg-neutral-900 border border-neutral-800 rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl flex flex-col text-neutral-100 animate-scale-in">
         
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-violet-950/60 flex items-center justify-between sticky top-0 bg-neutral-900/95 backdrop-blur-md z-10">
+        <div className="p-4 sm:p-5 border-b border-teal-950/60 flex items-center justify-between sticky top-0 bg-neutral-900/95 backdrop-blur-md z-10">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-600 border border-violet-500/40 text-white flex items-center justify-center shadow-lg shadow-violet-950/50">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#0F6E56] to-[#1D9E75] border border-teal-500/40 text-white flex items-center justify-center shadow-lg shadow-teal-950/50">
               <Laptop className="w-5 h-5" />
             </div>
             <div>
               <h2 className="text-base font-black text-white">Appareils connectés (Flex Web & PC)</h2>
-              <p className="text-[11px] text-violet-300/80">Liez votre compte à un PC Windows ou un autre téléphone</p>
+              <p className="text-[11px] text-teal-300/80">Liez votre compte à un PC Windows ou un autre téléphone</p>
             </div>
           </div>
 
@@ -181,7 +181,7 @@ export const LinkedDevicesModal: React.FC<LinkedDevicesModalProps> = ({ isOpen, 
               </h3>
               <button
                 onClick={() => setIsAddingDevice(!isAddingDevice)}
-                className="text-xs font-bold text-violet-400 hover:text-violet-300 flex items-center gap-1"
+                className="text-xs font-bold text-teal-400 hover:text-teal-300 flex items-center gap-1"
               >
                 <Plus className="w-3.5 h-3.5" />
                 Lier un appareil

@@ -4,14 +4,21 @@ export const CURRENT_USER: User = {
   id: 'user-franck',
   name: 'Franck Alex',
   username: 'franckalex',
-  avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80',
-  bio: 'Créateur & Innovateur numérique sur Flex Online 🚀',
+  avatar: '/src/assets/images/franck_alex_portrait_closeup_1790753805266.jpg',
+  bio: 'Créateur & Innovateur numérique sur Flex Online (21 ans) 🚀',
   phone: '+33 6 12 34 56 78',
   email: 'diohfranckalex1@gmail.com',
   status: 'online',
   verified: true,
   securityPin: '1234',
   recoveryKey: 'FLEX-ALEX-9901',
+  interests: [
+    '📚 Littérature & Écriture',
+    '💻 Informatique & Technologies',
+    '🤝 Partage & Amitié',
+    '🏛️ Histoire & Philosophie',
+    '🚀 Innovation & Entrepreneuriat'
+  ],
   linkedDevices: [
     {
       id: 'dev-pc-windows',
@@ -56,8 +63,8 @@ export const FLEX_AI: User = {
   id: 'user-flex-ai',
   name: 'Flex IA Assistant',
   username: 'flex_ai',
-  avatar: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
-  bio: 'Intelligence Artificielle officielle de Flex Online ⚡ Posez-moi toutes vos questions sur la vie, le travail, l\'application ou son créateur Franck Alex !',
+  avatar: '/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg',
+  bio: 'Intelligence Artificielle Universelle de Flex Online 🤖⚡ Expert en sciences, mathématiques, histoire, médecine, philosophie, géographie, programmation et vie quotidienne !',
   phone: '+33 8 00 77 77 77',
   email: 'ai@flexonline.network',
   status: 'online',
@@ -72,36 +79,6 @@ export const AVAILABLE_USERS: User[] = [
   FLEX_SUPPORT,
 ];
 
-export const INITIAL_CONVERSATIONS: Conversation[] = [
-  {
-    id: 'conv-ai-assistant',
-    type: 'direct',
-    participants: ['user-franck', 'user-flex-ai'],
-    unreadCount: { 'user-franck': 0 },
-    updatedAt: new Date().toISOString(),
-    pinned: true,
-  },
-  {
-    id: 'conv-support',
-    type: 'direct',
-    participants: ['user-franck', 'user-flex-support'],
-    unreadCount: { 'user-franck': 1 },
-    updatedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
-    pinned: true,
-  },
-  {
-    id: 'conv-group-community',
-    type: 'group',
-    name: 'Communauté Flex Online 🌟',
-    avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
-    description: 'Canal officiel des membres vérifiés Flex Online : échangez, partagez vos idées et vos projets en direct.',
-    participants: ['user-franck', 'user-flex-support', 'user-flex-ai'],
-    unreadCount: { 'user-franck': 0 },
-    updatedAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-    pinned: true,
-  },
-];
-
 export const INITIAL_MESSAGES: Message[] = [
   {
     id: 'msg-welcome-ai-1',
@@ -109,7 +86,7 @@ export const INITIAL_MESSAGES: Message[] = [
     senderId: 'user-flex-ai',
     senderName: 'Flex IA Assistant',
     senderAvatar: FLEX_AI.avatar,
-    content: `Bonjour ! 👋 Je suis l'Intelligence Artificielle officielle de Flex Online.\n\nPosez-moi n'importe quelle question :\n• 🌟 Sur mon créateur : Franck Alex (sa vision, comment il a créé l'application...)\n• 📱 Sur Flex Online : le chiffrement, les 2 comptes, la synchronisation PC...\n• 💡 Sur tout autre sujet : travail, sciences, études, conseils, rédaction, code, actualités...\n\nComment puis-je vous aider aujourd'hui ?`,
+    content: `Bonjour ! 👋 Je suis **Flex IA**, l'Intelligence Artificielle officielle de Flex Online créée par Franck Alex. 🤖⚡\n\nPosez-moi n'importe quelle question sans aucune limite :\n• 🧪 Sciences & Physique (relativité, gravité, atomes, optique...)\n• 📐 Mathématiques (calculs précis, algèbre, Pythagore, Thalès...)\n• 🩺 Médecine & Santé (anatomie, cœur, immunité, hygiène de vie...)\n• 🏛️ Histoire & Philosophie (empires mondiaux, stoïcisme, penseurs...)\n• 🌍 Géographie (capitales, pays, fleuves, géopolitique...)\n• 💻 Informatique & Code (Python, JavaScript, React, algorithmes...)\n• 🌟 Mon créateur Franck Alex & les fonctionnalités de Flex Online.\n\nQuelle question souhaitez-vous approfondir aujourd'hui ?`,
     type: 'text',
     timestamp: new Date().toISOString(),
     status: 'delivered',
@@ -145,12 +122,45 @@ export const INITIAL_MESSAGES: Message[] = [
     senderId: 'user-franck',
     senderName: 'Franck Alex',
     senderAvatar: CURRENT_USER.avatar,
-    content: 'Bienvenue sur le réseau Flex Online nouvelle génération ! Écritures agrandies, modèle unique violet néon, sécurité par puce SIM et synchronisation totale Windows & Mobile.',
+    content: 'Bienvenue sur le réseau Flex Online nouvelle génération ! Écritures confortables et aérées, modèle exclusif vert émeraude et turquoise impérial (#0F6E56 à #1D9E75), sécurité par puce SIM et synchronisation totale Windows & Mobile.',
     type: 'text',
     timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
     status: 'read',
     reactions: [{ emoji: '🔥', userId: 'user-flex-support', userName: 'Assistance Flex Officielle' }],
   }
+];
+
+export const INITIAL_CONVERSATIONS: Conversation[] = [
+  {
+    id: 'conv-ai-assistant',
+    type: 'direct',
+    participants: ['user-franck', 'user-flex-ai'],
+    unreadCount: { 'user-franck': 0 },
+    updatedAt: new Date().toISOString(),
+    pinned: true,
+    lastMessage: INITIAL_MESSAGES[0],
+  },
+  {
+    id: 'conv-support',
+    type: 'direct',
+    participants: ['user-franck', 'user-flex-support'],
+    unreadCount: { 'user-franck': 1 },
+    updatedAt: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+    pinned: true,
+    lastMessage: INITIAL_MESSAGES[2],
+  },
+  {
+    id: 'conv-group-community',
+    type: 'group',
+    name: 'Communauté Flex Online 🌟',
+    avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
+    description: 'Canal officiel des membres vérifiés Flex Online : échangez, partagez vos idées et vos projets en direct.',
+    participants: ['user-franck', 'user-flex-support', 'user-flex-ai'],
+    unreadCount: { 'user-franck': 0 },
+    updatedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+    pinned: true,
+    lastMessage: INITIAL_MESSAGES[3],
+  },
 ];
 
 export const INITIAL_POSTS: Post[] = [
@@ -160,7 +170,7 @@ export const INITIAL_POSTS: Post[] = [
     authorName: 'Franck Alex',
     authorAvatar: CURRENT_USER.avatar,
     authorVerified: true,
-    content: 'Fier de vous présenter la toute nouvelle version de Flex Online ! 🌟💜\n\nAdieu le vert classique : place à notre identité propre au violet néon impérial. Écritures agrandies pour un confort parfait sans forcer sur les yeux, synchronisation Windows et téléphones, et récupération garantie via puce SIM et mail.',
+    content: 'Fier de vous présenter la toute nouvelle version de Flex Online ! 🌟🛡️\n\nAdieu les interfaces banales : place à notre identité exclusive au vert émeraude profond et turquoise impérial (#0F6E56 à #1D9E75). Écritures confortables et aérées sans forcer sur les yeux, synchronisation Windows et téléphones, et récupération garantie via puce SIM et mail.',
     mediaUrl: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80',
     mediaType: 'image',
     timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString(),

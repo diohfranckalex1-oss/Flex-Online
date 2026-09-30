@@ -75,7 +75,7 @@ export const WhatsAppStatusRow: React.FC<WhatsAppStatusRowProps> = ({ onOpenAllS
             >
               <div className={`w-12 h-12 rounded-full p-0.5 transition-transform group-hover:scale-105 ${
                 myStories.length > 0
-                  ? 'bg-gradient-to-tr from-emerald-400 via-cyan-400 to-indigo-500'
+                  ? 'bg-gradient-to-tr from-[#0F6E56] via-teal-400 to-[#1D9E75]'
                   : 'bg-neutral-800'
               }`}>
                 <img
@@ -127,7 +127,7 @@ export const WhatsAppStatusRow: React.FC<WhatsAppStatusRowProps> = ({ onOpenAllS
                 onClick={() => setSelectedStoryIndex(storyIndex)}
                 className="flex flex-col items-center gap-1 shrink-0 cursor-pointer group"
               >
-                <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-cyan-400 via-indigo-500 to-violet-500 group-hover:scale-105 transition-transform shadow-xs">
+                <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-[#0F6E56] via-teal-500 to-[#1D9E75] group-hover:scale-105 transition-transform shadow-xs">
                   <img
                     src={story.authorAvatar}
                     alt={story.authorName}

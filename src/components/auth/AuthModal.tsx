@@ -138,11 +138,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-md p-3 sm:p-4 animate-fade-in text-neutral-100">
       <div 
         id="auth-modal-card"
-        className="w-full max-w-md bg-neutral-900 border border-violet-900/60 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="w-full max-w-md bg-neutral-900 border border-teal-700/60 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
       >
         {/* Header with Royal Violet Gradient */}
-        <div className="p-5 sm:p-6 bg-gradient-to-r from-violet-700 via-purple-700 to-indigo-800 text-white flex items-center justify-between relative overflow-hidden">
-          <div className="absolute right-0 top-0 w-32 h-32 bg-violet-500/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="p-5 sm:p-6 bg-gradient-to-r from-[#0d1f1b] via-[#122e26] to-[#143d32] text-white flex items-center justify-between relative overflow-hidden">
+          <div className="absolute right-0 top-0 w-32 h-32 bg-teal-500/20 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center gap-3 relative z-10">
             <FlexLogo size="md" showText={false} />
             <div>
@@ -150,7 +150,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <span>Flex Online Authentification</span>
                 <span className="text-[10px] bg-white/20 px-2 py-0.5 rounded-full font-bold">Sécurisé</span>
               </h3>
-              <p className="text-xs text-violet-200">
+              <p className="text-xs text-teal-200">
                 Connexion certifiée par Puce SIM, Google ou Clé de Récupération
               </p>
             </div>
@@ -164,13 +164,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Method Switcher */}
-        <div className="grid grid-cols-3 border-b border-violet-950/60 bg-neutral-950/60 p-1.5 gap-1">
+        <div className="grid grid-cols-3 border-b border-teal-950/60 bg-neutral-950/60 p-1.5 gap-1">
           <button
             type="button"
             onClick={() => { setAuthMethod('sim'); setStep('input'); setStatusMessage(null); }}
             className={`py-2 px-1 rounded-xl text-xs font-black flex flex-col items-center gap-1 transition-all ${
               authMethod === 'sim'
-                ? 'bg-violet-600 text-white shadow-md shadow-violet-950/40'
+                ? 'bg-teal-600 text-white shadow-md shadow-teal-950/40'
                 : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
             }`}
           >
@@ -183,7 +183,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             onClick={() => { setAuthMethod('google'); setStep('input'); setStatusMessage(null); }}
             className={`py-2 px-1 rounded-xl text-xs font-black flex flex-col items-center gap-1 transition-all ${
               authMethod === 'google'
-                ? 'bg-violet-600 text-white shadow-md shadow-violet-950/40'
+                ? 'bg-teal-600 text-white shadow-md shadow-teal-950/40'
                 : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
             }`}
           >
@@ -196,7 +196,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             onClick={() => { setAuthMethod('recovery'); setStep('input'); setStatusMessage(null); }}
             className={`py-2 px-1 rounded-xl text-xs font-black flex flex-col items-center gap-1 transition-all ${
               authMethod === 'recovery'
-                ? 'bg-violet-600 text-white shadow-md shadow-violet-950/40'
+                ? 'bg-teal-600 text-white shadow-md shadow-teal-950/40'
                 : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
             }`}
           >
@@ -211,12 +211,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <div className={`p-3.5 rounded-2xl text-xs font-semibold flex items-start gap-2.5 animate-fade-in ${
               statusMessage.type === 'error'
                 ? 'bg-rose-950/60 border border-rose-800/60 text-rose-200'
-                : 'bg-violet-950/60 border border-violet-800/60 text-violet-200'
+                : 'bg-teal-950/60 border border-teal-800/60 text-teal-200'
             }`}>
               {statusMessage.type === 'error' ? (
                 <ShieldAlert className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
               ) : (
-                <CheckCircle2 className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+                <CheckCircle2 className="w-4 h-4 text-teal-400 shrink-0 mt-0.5" />
               )}
               <span>{statusMessage.text}</span>
             </div>
@@ -225,7 +225,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {/* SIM Phone Authentication */}
           {authMethod === 'sim' && step === 'input' && (
             <form onSubmit={handleRequestOtp} className="space-y-4">
-              <div className="p-3.5 bg-violet-950/30 border border-violet-900/40 rounded-2xl text-xs text-violet-300">
+              <div className="p-3.5 bg-teal-950/30 border border-teal-800/40 rounded-2xl text-xs text-teal-300">
                 Un code de confirmation sécurisé vous sera envoyé par SMS sur votre carte SIM pour certifier votre authenticité.
               </div>
 
@@ -234,14 +234,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   Votre Numéro de Puce SIM :
                 </label>
                 <div className="relative">
-                  <Smartphone className="w-4 h-4 text-violet-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Smartphone className="w-4 h-4 text-teal-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="tel"
                     required
                     placeholder="+33 6 12 34 56 78"
                     value={phoneNumber}
                     onChange={(e) => setPhoneNumber(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-base font-bold text-white placeholder-neutral-500 focus:outline-hidden focus:border-violet-500"
+                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-base font-bold text-white placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
                   />
                 </div>
               </div>
@@ -251,13 +251,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   Nom d'affichage (optionnel) :
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-violet-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <User className="w-4 h-4 text-teal-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Franck Alex Dioh"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-semibold text-white placeholder-neutral-500 focus:outline-hidden focus:border-violet-500"
+                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-semibold text-white placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
                   />
                 </div>
               </div>
@@ -265,7 +265,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-violet-950/50 flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-teal-950/50 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 <span>Recevoir le SMS de confirmation</span>
@@ -276,7 +276,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {/* Google Authentication */}
           {authMethod === 'google' && step === 'input' && (
             <form onSubmit={handleRequestOtp} className="space-y-4">
-              <div className="p-3.5 bg-violet-950/30 border border-violet-900/40 rounded-2xl text-xs text-violet-300">
+              <div className="p-3.5 bg-teal-950/30 border border-teal-800/40 rounded-2xl text-xs text-teal-300">
                 Connexion officielle avec votre compte Google. Un message de validation vous sera expédié.
               </div>
 
@@ -285,14 +285,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   Votre Adresse Google :
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-violet-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-teal-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     required
                     placeholder="diohfranckalex1@gmail.com"
                     value={emailAddress}
                     onChange={(e) => setEmailAddress(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-base font-bold text-white placeholder-neutral-500 focus:outline-hidden focus:border-violet-500"
+                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-base font-bold text-white placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
                   />
                 </div>
               </div>
@@ -302,13 +302,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   Nom complet :
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-violet-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <User className="w-4 h-4 text-teal-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="text"
                     placeholder="Franck Alex"
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-semibold text-white placeholder-neutral-500 focus:outline-hidden focus:border-violet-500"
+                    className="w-full pl-10 pr-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-semibold text-white placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
                   />
                 </div>
               </div>
@@ -316,7 +316,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-violet-950/50 flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-teal-950/50 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
                 <span>Recevoir le code de confirmation Google</span>
@@ -327,7 +327,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {/* OTP Verification Step */}
           {step === 'otp' && (
             <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <div className="p-3.5 bg-violet-950/40 border border-violet-800/60 rounded-2xl text-xs text-violet-200">
+              <div className="p-3.5 bg-teal-950/40 border border-teal-800/60 rounded-2xl text-xs text-teal-200">
                 Saisissez le code à 6 chiffres reçu par {authMethod === 'sim' ? 'SMS' : 'compte Google'}.
               </div>
 
@@ -342,7 +342,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   placeholder="123456"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-center text-2xl font-mono tracking-widest text-violet-300 focus:outline-hidden focus:border-violet-500"
+                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-center text-2xl font-mono tracking-widest text-teal-300 focus:outline-hidden focus:border-teal-500"
                 />
               </div>
 
@@ -357,7 +357,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 <button
                   type="submit"
                   disabled={isSubmitting || otpCode.length < 4}
-                  className="flex-1 py-3.5 bg-violet-600 hover:bg-violet-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-violet-950/50 flex items-center justify-center gap-2"
+                  className="flex-1 py-3.5 bg-teal-600 hover:bg-teal-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-teal-950/50 flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
                   <span>Valider et Accéder au Compte</span>
@@ -369,7 +369,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           {/* Lost Phone Recovery */}
           {authMethod === 'recovery' && (
             <form onSubmit={handleRecoverLostPhone} className="space-y-4">
-              <div className="p-3.5 bg-neutral-950 border border-violet-900/40 rounded-2xl text-xs text-neutral-300 leading-relaxed">
+              <div className="p-3.5 bg-neutral-950 border border-teal-800/40 rounded-2xl text-xs text-neutral-300 leading-relaxed">
                 Vous avez perdu ou changé de téléphone ? Récupérez instantanément votre profil, vos contacts et vos conversations sécurisées à l'aide de votre puce SIM ou de votre Clé Maître.
               </div>
 
@@ -383,7 +383,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   placeholder="+33 6... ou monemail@gmail.com"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-semibold text-white placeholder-neutral-500 focus:outline-hidden focus:border-violet-500"
+                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-semibold text-white placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
                 />
               </div>
 
@@ -397,14 +397,14 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   placeholder="FLEX-REC-XXXX ou PIN à 4 chiffres"
                   value={recoveryKey}
                   onChange={(e) => setRecoveryKey(e.target.value)}
-                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-mono text-violet-300 placeholder-neutral-500 focus:outline-hidden focus:border-violet-500"
+                  className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm font-mono text-teal-300 placeholder-neutral-500 focus:outline-hidden focus:border-teal-500"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-3.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-violet-950/50 flex items-center justify-center gap-2"
+                className="w-full py-3.5 bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:from-teal-600 hover:to-emerald-500 disabled:opacity-50 text-white rounded-2xl font-black text-sm transition-all shadow-lg shadow-teal-950/50 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <KeyRound className="w-4 h-4" />}
                 <span>Restaurer Mon Compte</span>
@@ -414,7 +414,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-violet-950/60 bg-neutral-950 text-center text-xs text-neutral-400">
+        <div className="p-4 border-t border-teal-950/60 bg-neutral-950 text-center text-xs text-neutral-400">
           Chiffrement de bout en bout conforme au protocole Flex P2P
         </div>
       </div>

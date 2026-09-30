@@ -39,6 +39,27 @@
   }
 }
 
+/* Typography Personality / Caractère des écritures */
+html[data-font-family="system"], html[data-font-family="system"] body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+}
+
+html[data-font-family="poppins"], html[data-font-family="poppins"] body {
+  font-family: 'Poppins', 'Inter', system-ui, sans-serif !important;
+}
+
+html[data-font-family="rounded"], html[data-font-family="rounded"] body {
+  font-family: 'Quicksand', -apple-system, system-ui, sans-serif !important;
+}
+
+html[data-font-family="serif"], html[data-font-family="serif"] body {
+  font-family: 'Merriweather', Georgia, Cambria, serif !important;
+}
+
+html[data-font-family="mono"], html[data-font-family="mono"] body {
+  font-family: 'JetBrains Mono', 'Fira Code', Menlo, monospace !important;
+}
+
 /* Custom clean scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
@@ -58,14 +79,14 @@
   background: rgba(148, 163, 184, 0.45);
 }
 
-/* Refined Dark Theme Overrides (Teinte Ardoise Douce - Atténuation de l'éclat du noir & confort visuel) */
+/* Refined Dark Theme Overrides (Teinte Émeraude Sombre / Deep Teal - #0F6E56 à #1D9E75) */
 html:not(.light-theme) body {
-  background-color: #121622 !important;
-  color: #f8fafc !important;
+  background-color: #0c1614 !important;
+  color: #f1f8f6 !important;
 }
 
 html:not(.light-theme) .bg-neutral-950 {
-  background-color: #131722 !important;
+  background-color: #0d1815 !important;
 }
 
 html:not(.light-theme) .bg-neutral-950\/95,
@@ -73,29 +94,29 @@ html:not(.light-theme) .bg-neutral-950\/90,
 html:not(.light-theme) .bg-neutral-950\/80,
 html:not(.light-theme) .bg-neutral-950\/70,
 html:not(.light-theme) .bg-neutral-950\/60 {
-  background-color: rgba(19, 23, 34, 0.95) !important;
+  background-color: rgba(13, 24, 21, 0.95) !important;
 }
 
 html:not(.light-theme) .bg-neutral-900 {
-  background-color: #1a1f2d !important;
+  background-color: #12221e !important;
 }
 
 html:not(.light-theme) .bg-neutral-900\/95,
 html:not(.light-theme) .bg-neutral-900\/90,
 html:not(.light-theme) .bg-neutral-900\/80,
 html:not(.light-theme) .bg-neutral-900\/60 {
-  background-color: rgba(26, 31, 45, 0.95) !important;
+  background-color: rgba(18, 34, 30, 0.95) !important;
 }
 
 html:not(.light-theme) .bg-neutral-800 {
-  background-color: #23293a !important;
+  background-color: #182d28 !important;
 }
 
 html:not(.light-theme) .bg-neutral-800\/80,
 html:not(.light-theme) .bg-neutral-800\/60,
 html:not(.light-theme) .bg-neutral-800\/50,
 html:not(.light-theme) .bg-neutral-800\/40 {
-  background-color: rgba(35, 41, 58, 0.8) !important;
+  background-color: rgba(24, 45, 40, 0.8) !important;
 }
 
 html:not(.light-theme) .border-neutral-800,
@@ -103,32 +124,32 @@ html:not(.light-theme) .border-neutral-800\/80,
 html:not(.light-theme) .border-neutral-800\/60,
 html:not(.light-theme) .border-neutral-800\/50,
 html:not(.light-theme) .border-neutral-800\/40 {
-  border-color: #283044 !important;
+  border-color: #1e3933 !important;
 }
 
 html:not(.light-theme) .border-neutral-700,
 html:not(.light-theme) .border-neutral-700\/80 {
-  border-color: #353f58 !important;
+  border-color: #264a42 !important;
 }
 
-html:not(.light-theme) .border-violet-950\/40,
-html:not(.light-theme) .border-violet-950\/60,
-html:not(.light-theme) .border-violet-950\/80 {
-  border-color: rgba(139, 92, 246, 0.22) !important;
+html:not(.light-theme) .border-teal-950\/40,
+html:not(.light-theme) .border-teal-950\/60,
+html:not(.light-theme) .border-teal-950\/80 {
+  border-color: rgba(29, 158, 117, 0.25) !important;
 }
 
 html:not(.light-theme) .bg-black\/80,
 html:not(.light-theme) .bg-black\/70,
 html:not(.light-theme) .bg-black\/60 {
-  background-color: rgba(13, 16, 25, 0.76) !important;
+  background-color: rgba(10, 19, 17, 0.82) !important;
 }
 
 html:not(.light-theme) .text-neutral-400 {
-  color: #94a3b8 !important;
+  color: #8da49f !important;
 }
 
 html:not(.light-theme) .text-neutral-500 {
-  color: #64748b !important;
+  color: #637b75 !important;
 }
 
 /* Light Theme Overrides (Teint Blanc Lumineux - Écritures Parfaitement Lisibles et Nettes) */
@@ -170,9 +191,9 @@ html.light-theme .border-neutral-800\/80,
 html.light-theme .border-neutral-800\/60,
 html.light-theme .border-neutral-800\/50,
 html.light-theme .border-neutral-800\/40,
-html.light-theme .border-violet-950\/40,
-html.light-theme .border-violet-950\/60,
-html.light-theme .border-violet-950\/80 {
+html.light-theme .border-teal-950\/40,
+html.light-theme .border-teal-950\/60,
+html.light-theme .border-teal-950\/80 {
   border-color: #e2e8f0 !important;
 }
 
@@ -209,45 +230,44 @@ html.light-theme span.text-white:not([class*="bg-"]):not(button *):not(.badge) {
 }
 
 /* KEEP PURE WHITE TEXT ON ALL SOLID BUTTONS, BADGES, AND ACCENT BANNERS */
-html.light-theme button[class*="bg-violet-"],
+html.light-theme button[class*="bg-teal-"],
 html.light-theme button[class*="bg-emerald-"],
 html.light-theme button[class*="bg-rose-"],
-html.light-theme button[class*="bg-indigo-"],
 html.light-theme button[class*="bg-cyan-"],
-html.light-theme .bg-violet-600,
-html.light-theme .bg-violet-700,
+html.light-theme .bg-teal-600,
+html.light-theme .bg-teal-700,
 html.light-theme .bg-emerald-600,
 html.light-theme .bg-emerald-500,
 html.light-theme .bg-rose-600,
 html.light-theme .bg-rose-500,
-html.light-theme .bg-indigo-600,
 html.light-theme .bg-cyan-600 {
   color: #ffffff !important;
 }
 
-html.light-theme .bg-violet-600 *,
-html.light-theme .bg-violet-700 *,
+html.light-theme .bg-teal-600 *,
+html.light-theme .bg-teal-700 *,
 html.light-theme .bg-emerald-600 *,
 html.light-theme .bg-rose-600 *,
 html.light-theme .bg-rose-500 * {
   color: #ffffff !important;
 }
 
-/* User Sent Message Bubble (Violet) - Bright, crystal-clear white text */
-html.light-theme .bg-violet-700 {
-  background-color: #6d28d9 !important;
+/* User Sent Message Bubble (Deep Teal & Turquoise Gradient) - Bright, crystal-clear white text */
+html.light-theme .bg-teal-700,
+html.light-theme .bg-teal-800 {
+  background-color: #0F6E56 !important;
   color: #ffffff !important;
 }
-html.light-theme .bg-violet-700 p,
-html.light-theme .bg-violet-700 span,
-html.light-theme .bg-violet-700 .text-white {
+html.light-theme .bg-teal-700 p,
+html.light-theme .bg-teal-700 span,
+html.light-theme .bg-teal-700 .text-white {
   color: #ffffff !important;
 }
-html.light-theme .bg-violet-700 .text-violet-200,
-html.light-theme .bg-violet-700 .text-violet-300,
-html.light-theme .bg-violet-700 .text-violet-200\/90,
-html.light-theme .bg-violet-700 .text-violet-200\/80 {
-  color: #ede9fe !important;
+html.light-theme .bg-teal-700 .text-teal-200,
+html.light-theme .bg-teal-700 .text-teal-300,
+html.light-theme .bg-teal-700 .text-teal-200\/90,
+html.light-theme .bg-teal-700 .text-teal-200\/80 {
+  color: #ccfbf1 !important;
 }
 
 /* Received Message Bubble - Crisp pure white bubble with delicate border & rich dark text */
@@ -291,7 +311,7 @@ html.light-theme input[placeholder*="Message"] {
 
 /* Unread Badges & Counts: Pure bold white on bright badge */
 html.light-theme .bg-rose-600,
-html.light-theme .bg-violet-600 {
+html.light-theme .bg-teal-600 {
   color: #ffffff !important;
 }
 

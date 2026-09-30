@@ -15,10 +15,10 @@ export const FlexLoungeBar: React.FC = () => {
     <div id="flex-lounges-widget" className="mb-4">
       {/* Active in-lounge sticky banner */}
       {currentLounge && (
-        <div className="mb-3 p-3.5 bg-gradient-to-r from-violet-900/90 via-indigo-900/90 to-neutral-900 border border-indigo-500/30 rounded-2xl text-white shadow-xl shadow-indigo-950/40 backdrop-blur-md animate-scale-in flex items-center justify-between">
+        <div className="mb-3 p-3.5 bg-gradient-to-r from-[#0F6E56]/90 via-teal-900/90 to-neutral-900 border border-teal-500/30 rounded-2xl text-white shadow-xl shadow-teal-950/40 backdrop-blur-md animate-scale-in flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md">
+              <div className="w-10 h-10 rounded-xl bg-teal-600 flex items-center justify-center text-white shadow-md">
                 <Radio className="w-5 h-5 animate-pulse text-cyan-300" />
               </div>
               <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-neutral-900" />
@@ -67,7 +67,7 @@ export const FlexLoungeBar: React.FC = () => {
         <div className="bg-neutral-900/60 border border-neutral-800/80 rounded-2xl p-3.5 backdrop-blur-sm shadow-xs">
           <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2">
-              <Headphones className="w-4 h-4 text-indigo-400" />
+              <Headphones className="w-4 h-4 text-teal-400" />
               <h3 className="text-xs font-bold text-neutral-200 tracking-wide">
                 Salons Vocaux & Chill Flex
               </h3>
@@ -82,12 +82,12 @@ export const FlexLoungeBar: React.FC = () => {
               <div
                 key={lounge.id}
                 onClick={() => setActiveLoungeId(lounge.id)}
-                className="group p-3 rounded-xl bg-neutral-800/60 hover:bg-indigo-950/40 border border-neutral-700/50 hover:border-indigo-500/40 cursor-pointer transition-all flex items-center justify-between"
+                className="group p-3 rounded-xl bg-neutral-800/60 hover:bg-teal-950/40 border border-neutral-700/50 hover:border-teal-500/40 cursor-pointer transition-all flex items-center justify-between"
               >
                 <div className="min-w-0 pr-2">
                   <div className="flex items-center gap-2 mb-0.5">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-                    <p className="text-xs font-bold text-neutral-100 group-hover:text-indigo-300 truncate">
+                    <p className="text-xs font-bold text-neutral-100 group-hover:text-teal-300 truncate">
                       {lounge.name}
                     </p>
                   </div>
@@ -104,7 +104,7 @@ export const FlexLoungeBar: React.FC = () => {
                   </div>
                 </div>
 
-                <button className="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-bold shrink-0 transition-transform group-hover:scale-105 shadow-xs shadow-indigo-600/30">
+                <button className="px-2.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white text-[11px] font-bold shrink-0 transition-transform group-hover:scale-105 shadow-xs shadow-teal-600/30">
                   Rejoindre
                 </button>
               </div>

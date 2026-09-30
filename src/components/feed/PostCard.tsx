@@ -109,7 +109,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
           <img
             src={post.authorAvatar}
             alt={post.authorName}
-            className="w-10 h-10 rounded-2xl object-cover ring-1 ring-indigo-500/40"
+            className="w-10 h-10 rounded-2xl object-cover ring-1 ring-teal-500/40"
           />
           <div>
             <div className="flex items-center gap-1.5">
@@ -128,7 +128,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
                   <Globe className="w-3 h-3 inline" /> Public
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-indigo-400">
+                <span className="flex items-center gap-1 text-teal-400">
                   <Users className="w-3 h-3 inline" /> Amis
                 </span>
               )}

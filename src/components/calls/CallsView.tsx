@@ -31,7 +31,7 @@ export const CallsView: React.FC = () => {
     <div id="calls-view-panel" className="flex-1 overflow-y-auto bg-neutral-950 max-w-2xl mx-auto w-full p-4 sm:p-6 border-x border-neutral-800/80 min-h-full text-neutral-100">
       {/* Create call link banner */}
       <div className="flex items-center gap-3 p-3.5 bg-neutral-900 border border-neutral-800 rounded-2xl mb-4 shadow-xl">
-        <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-indigo-600/30">
+        <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-[#0F6E56] to-[#1D9E75] text-white flex items-center justify-center shrink-0 shadow-md shadow-teal-950/50">
           <LinkIcon className="w-5 h-5" />
         </div>
         <div className="flex-1 min-w-0">
@@ -78,7 +78,7 @@ export const CallsView: React.FC = () => {
           {otherContacts.map((contact) => (
             <div
               key={contact.id}
-              className="p-3.5 bg-neutral-900 rounded-2xl border border-neutral-800/80 flex flex-col items-center text-center hover:border-indigo-500/50 transition-colors shadow-md"
+              className="p-3.5 bg-neutral-900 rounded-2xl border border-neutral-800/80 flex flex-col items-center text-center hover:border-teal-500/50 transition-colors shadow-md"
             >
               <div className="relative mb-2">
                 <img
@@ -105,7 +105,7 @@ export const CallsView: React.FC = () => {
                 </button>
                 <button
                   onClick={() => startCall(contact, 'video')}
-                  className="w-8 h-8 rounded-xl bg-neutral-800 hover:bg-indigo-600 hover:text-white text-indigo-400 flex items-center justify-center transition-all shadow-xs"
+                  className="w-8 h-8 rounded-xl bg-neutral-800 hover:bg-teal-600 hover:text-white text-teal-400 flex items-center justify-center transition-all shadow-xs"
                   title="Appel vidéo"
                 >
                   <Video className="w-4 h-4" />
@@ -146,7 +146,7 @@ export const CallsView: React.FC = () => {
                         ) : isMissed ? (
                           <PhoneMissed className="w-3.5 h-3.5 text-rose-500 shrink-0" />
                         ) : (
-                          <PhoneIncoming className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                          <PhoneIncoming className="w-3.5 h-3.5 text-teal-400 shrink-0" />
                         )}
                         <span className="text-[11px]">
                           {log.timestamp} {log.duration ? `• ${log.duration}` : ''}

@@ -11,6 +11,8 @@ export interface LinkedDevice {
   status: 'active' | 'revoked';
 }
 
+export type FontFamilyPreference = 'system' | 'poppins' | 'rounded' | 'serif' | 'mono';
+
 export interface User {
   id: string;
   name: string;
@@ -31,6 +33,17 @@ export interface User {
   recoveryKey?: string;
   linkedDevices?: LinkedDevice[];
   fontSizePreference?: 'normal' | 'large' | 'xlarge';
+  fontFamilyPreference?: FontFamilyPreference;
+  city?: string;
+  age?: number;
+  flag?: string;
+  continent?: 'afrique' | 'europe' | 'ameriques' | 'asie' | 'oceanie' | 'moyen-orient';
+  nativeLanguages?: string[];
+  learningLanguages?: string[];
+  interests?: string[];
+  occupation?: string;
+  icebreaker?: string;
+  isHiFlexMember?: boolean;
   createdAt?: string;
 }
 
@@ -42,12 +55,31 @@ export interface VerificationCode {
   expiresAt: string;
 }
 
-export type MessageType = 'text' | 'image' | 'voice' | 'file';
+export type MessageType = 'text' | 'image' | 'video' | 'voice' | 'file' | 'poll';
+
+export interface PollOption {
+  id: string;
+  text: string;
+  voters: string[]; // user IDs who voted for this option
+}
+
+export interface PollData {
+  question: string;
+  options: PollOption[];
+  totalVotes: number;
+  closed?: boolean;
+}
 
 export interface MessageReaction {
   emoji: string;
   userId: string;
   userName: string;
+}
+
+export interface MessageTranslation {
+  text: string;
+  sourceLang?: string;
+  targetLang: string;
 }
 
 export interface Message {
@@ -64,6 +96,17 @@ export interface Message {
   status: 'sent' | 'delivered' | 'read';
   reactions: MessageReaction[];
   replyToId?: string;
+  fileName?: string;
+  fileSize?: string;
+  isStarred?: boolean;
+  // Ephemeral & View-Once features
+  viewOnce?: boolean;
+  viewed?: boolean;
+  // Poll feature
+  pollData?: PollData;
+  // Instant AI translation
+  translation?: MessageTranslation;
+  ephemeralHours?: number;
 }
 
 export interface Conversation {

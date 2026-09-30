@@ -254,7 +254,7 @@ export const ContactsSyncModal: React.FC<ContactsSyncModalProps> = ({ isOpen, on
             onClick={() => setActiveTab('manual')}
             className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all ${
               activeTab === 'manual'
-                ? 'bg-neutral-800 text-indigo-300 shadow-xs'
+                ? 'bg-neutral-800 text-teal-300 shadow-xs'
                 : 'text-neutral-400 hover:text-white'
             }`}
           >
@@ -354,7 +354,7 @@ export const ContactsSyncModal: React.FC<ContactsSyncModalProps> = ({ isOpen, on
                           <div className="flex items-center gap-1.5">
                             <button
                               onClick={() => handleStartChat(contact)}
-                              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
+                              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 text-white text-xs font-bold flex items-center gap-1.5 shadow-xs"
                               title="Discuter maintenant"
                             >
                               <MessageSquare className="w-3.5 h-3.5" />
@@ -445,7 +445,7 @@ export const ContactsSyncModal: React.FC<ContactsSyncModalProps> = ({ isOpen, on
               {/* Method A: Mobile Native Contact Picker */}
               <div className="p-4 bg-neutral-950 rounded-2xl border border-neutral-800 space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-950 text-indigo-300 flex items-center justify-center font-bold border border-indigo-800/60 shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-teal-950 text-teal-300 flex items-center justify-center font-bold border border-teal-800/60 shrink-0">
                     <Smartphone className="w-5 h-5" />
                   </div>
                   <div>
@@ -457,7 +457,7 @@ export const ContactsSyncModal: React.FC<ContactsSyncModalProps> = ({ isOpen, on
                 <button
                   onClick={handleNativeContactPicker}
                   disabled={isSyncing}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-xs font-black transition-all flex items-center justify-center gap-2 shadow-md shadow-indigo-600/30"
+                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 text-white text-xs font-black transition-all flex items-center justify-center gap-2 shadow-md shadow-teal-950/60"
                 >
                   <RefreshCw className={`w-4 h-4 ${isSyncing ? 'animate-spin' : ''}`} />
                   <span>Synchroniser depuis mon téléphone</span>
@@ -554,7 +554,7 @@ export const ContactsSyncModal: React.FC<ContactsSyncModalProps> = ({ isOpen, on
               <button
                 type="submit"
                 disabled={!newName.trim() || !newPhone.trim()}
-                className="w-full py-3 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 disabled:opacity-50 text-white text-xs font-black transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 disabled:opacity-50 text-white text-xs font-black transition-all shadow-lg shadow-teal-950/60 flex items-center justify-center gap-2 cursor-pointer"
               >
                 <UserPlus className="w-4 h-4" />
                 <span>Enregistrer ce contact dans Flex Online</span>

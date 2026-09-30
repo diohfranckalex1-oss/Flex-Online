@@ -1,0 +1,365 @@
+{
+  "users": [
+    {
+      "id": "user-franck",
+      "name": "Franck Alex",
+      "username": "franckalex",
+      "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      "bio": "Créateur & Innovateur numérique sur Flex Online 🚀",
+      "phone": "+33 6 12 34 56 78",
+      "email": "diohfranckalex1@gmail.com",
+      "status": "online",
+      "verified": true,
+      "securityPin": "1234",
+      "recoveryKey": "FLEX-ALEX-9901",
+      "linkedDevices": [
+        {
+          "id": "dev-pc-windows",
+          "name": "Windows PC (Chrome)",
+          "type": "pc",
+          "os": "Windows 11 Pro",
+          "browser": "Chrome 128",
+          "lastActive": "Actif maintenant",
+          "ip": "192.168.1.42",
+          "status": "active"
+        },
+        {
+          "id": "dev-phone-main",
+          "name": "Téléphone Mobile (Puce SIM active)",
+          "type": "mobile",
+          "os": "Android 15",
+          "browser": "Flex PWA Mobile",
+          "lastActive": "Actif maintenant",
+          "ip": "10.0.0.8",
+          "status": "active"
+        }
+      ],
+      "fontSizePreference": "large",
+      "createdAt": "2026-09-27T09:26:41.871Z"
+    },
+    {
+      "id": "user-flex-ai",
+      "name": "Flex IA Assistant",
+      "username": "flex_ai",
+      "avatar": "/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg",
+      "bio": "Intelligence Artificielle Universelle de Flex Online 🤖⚡ Expert en sciences, mathématiques, histoire, médecine, philosophie, géographie, programmation et vie quotidienne !",
+      "phone": "+33 8 00 77 77 77",
+      "email": "ai@flexonline.network",
+      "status": "online",
+      "lastSeen": "Toujours disponible ⚡",
+      "verified": true,
+      "createdAt": "2026-09-27T09:26:41.871Z"
+    },
+    {
+      "id": "user-flex-support",
+      "name": "Assistance Flex Officielle",
+      "username": "flex_support",
+      "avatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+      "bio": "Centre de sécurité, vérification puce SIM et récupération de compte 24/7 🛡️",
+      "phone": "+33 8 00 00 35 39",
+      "email": "support@flexonline.network",
+      "status": "online",
+      "lastSeen": "Toujours en ligne",
+      "verified": true,
+      "createdAt": "2026-09-27T09:26:41.871Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conv-ai-assistant",
+      "type": "direct",
+      "participants": [
+        "user-franck",
+        "user-flex-ai",
+        "user-flex-support"
+      ],
+      "unreadCount": {
+        "user-franck": 4,
+        "user-flex-ai": 2
+      },
+      "updatedAt": "2026-09-27T09:32:36.056Z",
+      "pinned": true,
+      "lastMessage": {
+        "id": "msg-ai-1790501556056-ozwy",
+        "conversationId": "conv-ai-assistant",
+        "senderId": "user-flex-ai",
+        "senderName": "Flex IA Assistant",
+        "senderAvatar": "/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg",
+        "content": "*Le Prince* (*Il Principe*) a été écrit par le philosophe et homme d'État florentin **Nicolas Machiavel** (Niccolò Machiavelli) en 1513 et publié à titre posthume en 1532. C'est l'un des traités politiques les plus influents de l'histoire universelle, posant les bases de la science politique moderne et analysant la conquête et la conservation du pouvoir.",
+        "type": "text",
+        "timestamp": "2026-09-27T09:32:36.056Z",
+        "status": "delivered",
+        "reactions": []
+      }
+    },
+    {
+      "id": "conv-support",
+      "type": "direct",
+      "participants": [
+        "user-franck",
+        "user-flex-support"
+      ],
+      "unreadCount": {
+        "user-franck": 1
+      },
+      "updatedAt": "2026-09-27T09:24:41.871Z",
+      "pinned": true,
+      "lastMessage": {
+        "id": "msg-welcome-support-2",
+        "conversationId": "conv-support",
+        "senderId": "user-flex-support",
+        "senderName": "Assistance Flex Officielle",
+        "senderAvatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+        "content": "💡 Astuce multi-écrans : vous pouvez associer votre ordinateur Windows et votre téléphone mobile directement depuis le menu Paramètres > \"Appareils Connectés\" pour utiliser Flex Online simultanément sur tous vos écrans sans déconnexion !",
+        "type": "text",
+        "timestamp": "2026-09-27T09:24:41.871Z",
+        "status": "delivered",
+        "reactions": [
+          {
+            "emoji": "⚡",
+            "userId": "user-franck",
+            "userName": "Franck Alex"
+          }
+        ]
+      }
+    },
+    {
+      "id": "conv-group-community",
+      "type": "group",
+      "name": "Communauté Flex Online 🌟",
+      "avatar": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+      "description": "Canal officiel des membres vérifiés Flex Online : échangez, partagez vos idées et vos projets en direct.",
+      "participants": [
+        "user-franck",
+        "user-flex-support",
+        "user-flex-ai"
+      ],
+      "unreadCount": {
+        "user-franck": 0
+      },
+      "updatedAt": "2026-09-27T09:11:41.871Z",
+      "pinned": true,
+      "lastMessage": {
+        "id": "msg-comm-1",
+        "conversationId": "conv-group-community",
+        "senderId": "user-franck",
+        "senderName": "Franck Alex",
+        "senderAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+        "content": "Bienvenue sur le réseau Flex Online nouvelle génération ! Écritures confortables et aérées, modèle exclusif vert émeraude et turquoise impérial (#0F6E56 à #1D9E75), sécurité par puce SIM et synchronisation totale Windows & Mobile.",
+        "type": "text",
+        "timestamp": "2026-09-27T09:11:41.871Z",
+        "status": "read",
+        "reactions": [
+          {
+            "emoji": "🔥",
+            "userId": "user-flex-support",
+            "userName": "Assistance Flex Officielle"
+          }
+        ]
+      }
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-welcome-ai-1",
+      "conversationId": "conv-ai-assistant",
+      "senderId": "user-flex-ai",
+      "senderName": "Flex IA Assistant",
+      "senderAvatar": "/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg",
+      "content": "Bonjour ! 👋 Je suis **Flex IA**, l'Intelligence Artificielle officielle de Flex Online créée par Franck Alex. 🤖⚡\n\nPosez-moi n'importe quelle question sans aucune limite :\n• 🧪 Sciences & Physique (relativité, gravité, atomes, optique...)\n• 📐 Mathématiques (calculs précis, algèbre, Pythagore, Thalès...)\n• 🩺 Médecine & Santé (anatomie, cœur, immunité, hygiène de vie...)\n• 🏛️ Histoire & Philosophie (empires mondiaux, stoïcisme, penseurs...)\n• 🌍 Géographie (capitales, pays, fleuves, géopolitique...)\n• 💻 Informatique & Code (Python, JavaScript, React, algorithmes...)\n• 🌟 Mon créateur Franck Alex & les fonctionnalités de Flex Online.\n\nQuelle question souhaitez-vous approfondir aujourd'hui ?",
+      "type": "text",
+      "timestamp": "2026-09-27T09:26:41.871Z",
+      "status": "delivered",
+      "reactions": [
+        {
+          "emoji": "🤖",
+          "userId": "user-flex-ai",
+          "userName": "Flex IA"
+        }
+      ]
+    },
+    {
+      "id": "msg-welcome-support-1",
+      "conversationId": "conv-support",
+      "senderId": "user-flex-support",
+      "senderName": "Assistance Flex Officielle",
+      "senderAvatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+      "content": "Bienvenue Franck Alex sur votre espace sécurisé Flex Online ! 🛡️✨\n\nVotre compte est protégé par votre puce SIM et votre e-mail (diohfranckalex1@gmail.com). Si vous perdez votre téléphone ou changez d'ordinateur, votre clé d'urgence FLEX-ALEX-9901 et la confirmation par SMS vous permettront de restaurer instantanément tous vos messages et contacts.",
+      "type": "text",
+      "timestamp": "2026-09-27T09:21:41.871Z",
+      "status": "delivered",
+      "reactions": [
+        {
+          "emoji": "🌟",
+          "userId": "user-franck",
+          "userName": "Franck Alex"
+        }
+      ]
+    },
+    {
+      "id": "msg-welcome-support-2",
+      "conversationId": "conv-support",
+      "senderId": "user-flex-support",
+      "senderName": "Assistance Flex Officielle",
+      "senderAvatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+      "content": "💡 Astuce multi-écrans : vous pouvez associer votre ordinateur Windows et votre téléphone mobile directement depuis le menu Paramètres > \"Appareils Connectés\" pour utiliser Flex Online simultanément sur tous vos écrans sans déconnexion !",
+      "type": "text",
+      "timestamp": "2026-09-27T09:24:41.871Z",
+      "status": "delivered",
+      "reactions": [
+        {
+          "emoji": "⚡",
+          "userId": "user-franck",
+          "userName": "Franck Alex"
+        }
+      ]
+    },
+    {
+      "id": "msg-comm-1",
+      "conversationId": "conv-group-community",
+      "senderId": "user-franck",
+      "senderName": "Franck Alex",
+      "senderAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      "content": "Bienvenue sur le réseau Flex Online nouvelle génération ! Écritures confortables et aérées, modèle exclusif vert émeraude et turquoise impérial (#0F6E56 à #1D9E75), sécurité par puce SIM et synchronisation totale Windows & Mobile.",
+      "type": "text",
+      "timestamp": "2026-09-27T09:11:41.871Z",
+      "status": "read",
+      "reactions": [
+        {
+          "emoji": "🔥",
+          "userId": "user-flex-support",
+          "userName": "Assistance Flex Officielle"
+        }
+      ]
+    },
+    {
+      "id": "msg-1790501495315-tblsn",
+      "conversationId": "conv-ai-assistant",
+      "senderId": "user-1790326736723",
+      "senderName": "Franck Alex Dioh",
+      "senderAvatar": "https://api.dicebear.com/7.x/bottts/svg?seed=franckalex_dioh",
+      "content": "C'est quoi un algorithme",
+      "type": "text",
+      "timestamp": "2026-09-27T09:31:35.315Z",
+      "status": "sent",
+      "reactions": [],
+      "isStarred": false,
+      "viewOnce": false,
+      "viewed": false
+    },
+    {
+      "id": "msg-ai-1790501494800-hs9a",
+      "conversationId": "conv-ai-assistant",
+      "senderId": "user-flex-ai",
+      "senderName": "Flex IA Assistant",
+      "senderAvatar": "/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg",
+      "content": "💻 **Informatique & Développement Moderne :**\n\n• **Exemple d'algorithme rapide en Python :**\n```python\n# Filtrer et trier une liste d'éléments uniques\ndef tri_intelligent(elements):\n    uniques = list(set(elements))\n    return sorted(uniques)\n\nprint(tri_intelligent([5, 2, 8, 2, 9, 5, 1]))\n# Sortie: [1, 2, 5, 8, 9]\n```\n\n• **Exemple en JavaScript / TypeScript :**\n```typescript\n// Requête API moderne et robuste avec gestion d'erreurs\nasync function chargerDonnees(url: string) {\n  try {\n    const reponse = await fetch(url);\n    if (!reponse.ok) throw new Error(`Erreur HTTP: ${reponse.status}`);\n    return await reponse.json();\n  } catch (err) {\n    console.error('Échec de la requête:', err);\n    return null;\n  }\n}\n```\n\n💡 *Flex Online est développé avec React, Vite, Node.js et TypeScript pour des performances maximales !*",
+      "type": "text",
+      "timestamp": "2026-09-27T09:31:34.800Z",
+      "status": "delivered",
+      "reactions": []
+    },
+    {
+      "id": "msg-1790501556656-q95hy",
+      "conversationId": "conv-ai-assistant",
+      "senderId": "user-1790326736723",
+      "senderName": "Franck Alex Dioh",
+      "senderAvatar": "https://api.dicebear.com/7.x/bottts/svg?seed=franckalex_dioh",
+      "content": "Qui est L'auteur de l'œuvre le Prince ?",
+      "type": "text",
+      "timestamp": "2026-09-27T09:32:36.656Z",
+      "status": "sent",
+      "reactions": [],
+      "isStarred": false,
+      "viewOnce": false,
+      "viewed": false
+    },
+    {
+      "id": "msg-ai-1790501556056-ozwy",
+      "conversationId": "conv-ai-assistant",
+      "senderId": "user-flex-ai",
+      "senderName": "Flex IA Assistant",
+      "senderAvatar": "/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg",
+      "content": "*Le Prince* (*Il Principe*) a été écrit par le philosophe et homme d'État florentin **Nicolas Machiavel** (Niccolò Machiavelli) en 1513 et publié à titre posthume en 1532. C'est l'un des traités politiques les plus influents de l'histoire universelle, posant les bases de la science politique moderne et analysant la conquête et la conservation du pouvoir.",
+      "type": "text",
+      "timestamp": "2026-09-27T09:32:36.056Z",
+      "status": "delivered",
+      "reactions": []
+    }
+  ],
+  "posts": [
+    {
+      "id": "post-1",
+      "authorId": "user-franck",
+      "authorName": "Franck Alex",
+      "authorAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      "authorVerified": true,
+      "content": "Fier de vous présenter la toute nouvelle version de Flex Online ! 🌟🛡️\n\nAdieu les interfaces banales : place à notre identité exclusive au vert émeraude profond et turquoise impérial (#0F6E56 à #1D9E75). Écritures confortables et aérées sans forcer sur les yeux, synchronisation Windows et téléphones, et récupération garantie via puce SIM et mail.",
+      "mediaUrl": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=1200&q=80",
+      "mediaType": "image",
+      "timestamp": "2026-09-27T08:56:41.871Z",
+      "reactions": [
+        {
+          "type": "love",
+          "userId": "user-flex-support",
+          "userName": "Assistance Flex Officielle"
+        },
+        {
+          "type": "like",
+          "userId": "user-franck",
+          "userName": "Franck Alex"
+        }
+      ],
+      "comments": [
+        {
+          "id": "c-1",
+          "postId": "post-1",
+          "authorId": "user-flex-support",
+          "authorName": "Assistance Flex Officielle",
+          "authorAvatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+          "content": "Félicitations pour cette mise à jour 5 étoiles ! Le système de récupération par puce et multi-appareils est opérationnel à 100%.",
+          "timestamp": "2026-09-27T09:11:41.871Z",
+          "likes": [
+            "user-franck"
+          ]
+        }
+      ],
+      "sharesCount": 12,
+      "privacy": "public"
+    }
+  ],
+  "stories": [
+    {
+      "id": "story-1",
+      "authorId": "user-franck",
+      "authorName": "Franck Alex",
+      "authorAvatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+      "mediaUrl": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+      "caption": "Flex Online : interface stable, élégante et ultra-rapide 🚀",
+      "timestamp": "2026-09-27T07:26:41.871Z",
+      "expiresAt": "2026-09-28T07:26:41.871Z"
+    }
+  ],
+  "callLogs": [
+    {
+      "id": "call-1",
+      "contact": {
+        "id": "user-flex-support",
+        "name": "Assistance Flex Officielle",
+        "username": "flex_support",
+        "avatar": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+        "bio": "Centre de sécurité, vérification puce SIM et récupération de compte 24/7 🛡️",
+        "phone": "+33 8 00 00 35 39",
+        "email": "support@flexonline.network",
+        "status": "online",
+        "lastSeen": "Toujours en ligne",
+        "verified": true,
+        "createdAt": "2026-09-27T09:26:41.871Z"
+      },
+      "type": "audio",
+      "direction": "incoming",
+      "timestamp": "2026-09-27T05:26:41.871Z",
+      "duration": "2:15"
+    }
+  ]
+}

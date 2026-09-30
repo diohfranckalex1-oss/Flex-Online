@@ -63,7 +63,7 @@ export const StoriesSection: React.FC = () => {
               />
             </div>
             <div className="h-1/4 bg-neutral-900 relative flex items-center justify-center p-2 text-center">
-              <div className="absolute -top-4 w-8 h-8 rounded-full bg-gradient-to-tr from-violet-600 to-indigo-600 text-white border-2 border-neutral-900 flex items-center justify-center shadow-lg shadow-indigo-600/30">
+              <div className="absolute -top-4 w-8 h-8 rounded-full bg-gradient-to-tr from-[#0F6E56] to-[#1D9E75] text-white border-2 border-neutral-900 flex items-center justify-center shadow-lg shadow-teal-950/50">
                 <Plus className="w-4 h-4" />
               </div>
               <span className="text-[11px] font-black text-neutral-200 mt-2 truncate">
@@ -155,7 +155,7 @@ export const StoriesSection: React.FC = () => {
               />
               <button
                 onClick={handlePublishStory}
-                className="w-full py-2.5 bg-gradient-to-r from-violet-600 via-indigo-600 to-cyan-500 hover:from-violet-500 hover:to-cyan-400 text-white rounded-xl font-bold text-xs shadow-lg shadow-indigo-600/30"
+                className="w-full py-2.5 bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:opacity-90 text-white rounded-xl font-bold text-xs shadow-lg shadow-teal-950/40"
               >
                 Publier la story
               </button>

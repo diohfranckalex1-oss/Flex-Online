@@ -25,10 +25,13 @@ import {
   Square,
   MoreVertical,
   ShieldAlert,
-  Bot
+  Bot,
+  FileText,
+  BarChart2
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { Conversation, User } from '../../types';
+import { FLEX_AI } from '../../data/initialData';
 import { NewChatModal } from './NewChatModal';
 import { WhatsAppStatusRow } from './WhatsAppStatusRow';
 import { StoryViewerModal } from '../stories/StoryViewerModal';
@@ -45,6 +48,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
     users, 
     currentUser, 
     typingMap, 
+    aiThinkingMap,
     stories,
     createStory,
     callLogs,
@@ -88,6 +92,9 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
   );
 
   const getDirectChatUser = (conv: Conversation): User | undefined => {
+    if (conv.id === 'conv-ai-assistant' || conv.id.startsWith('conv-ai-') || conv.participants.includes('user-flex-ai')) {
+      return users.find((u) => u.id === 'user-flex-ai') || FLEX_AI;
+    }
     const otherId = conv.participants.find((id) => id !== currentUser.id) || conv.participants[0];
     return users.find((u) => u.id === otherId);
   };
@@ -243,7 +250,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
           <button
             id="btn-open-new-chat"
             onClick={() => setIsNewChatOpen(true)}
-            className="w-10 h-10 rounded-2xl bg-violet-600 hover:bg-violet-500 text-white flex items-center justify-center transition-transform active:scale-95 shadow-lg shadow-violet-950/50"
+            className="w-10 h-10 rounded-2xl bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] hover:from-teal-600 hover:to-emerald-500 text-white flex items-center justify-center transition-transform active:scale-95 shadow-lg shadow-teal-950/60"
             title="Nouvelle discussion"
           >
             <Plus className="w-5 h-5 stroke-[2.5]" />
@@ -252,16 +259,16 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
       </div>
 
       {/* Flex Exclusive Navigation Sub-Tabs: Discussions / Statuts / Appels */}
-      <div className="grid grid-cols-3 border-b border-violet-950/40 bg-neutral-950/80 p-1.5 gap-1.5">
+      <div className="grid grid-cols-3 border-b border-teal-950/50 bg-[#0c1614] p-1.5 gap-1.5">
         <button
           onClick={() => setSubTab('chats')}
           className={`py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
             subTab === 'chats'
-              ? 'bg-violet-600 text-white shadow-md shadow-violet-950/40 border border-violet-500/40'
+              ? 'bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] text-white shadow-md shadow-teal-950/40 border border-teal-400/40'
               : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
           }`}
         >
-          <MessageSquare className="w-4 h-4 text-violet-200" />
+          <MessageSquare className="w-4 h-4 text-teal-200" />
           <span>Discussions</span>
           {Number(totalUnread) > 0 && (
             <span className="min-w-4.5 h-4.5 px-1 rounded-full bg-rose-600 text-white text-[10px] font-black flex items-center justify-center shadow-xs">
@@ -275,10 +282,10 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
           className="py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900"
           title="Accéder aux statuts et stories dans le Fil Flex"
         >
-          <CircleDashed className="w-4 h-4 text-violet-400" />
+          <CircleDashed className="w-4 h-4 text-teal-400" />
           <span>Statuts Flex</span>
           {stories.length > 0 && (
-            <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-teal-400 animate-pulse" />
           )}
         </button>
 
@@ -286,11 +293,11 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
           onClick={() => setSubTab('calls')}
           className={`py-2 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-1.5 transition-all ${
             subTab === 'calls'
-              ? 'bg-violet-600 text-white shadow-md shadow-violet-950/40 border border-violet-500/40'
+              ? 'bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] text-white shadow-md shadow-teal-950/40 border border-teal-400/40'
               : 'text-neutral-400 hover:text-neutral-200 hover:bg-neutral-900'
           }`}
         >
-          <Phone className="w-4 h-4 text-violet-200" />
+          <Phone className="w-4 h-4 text-teal-200" />
           <span>Appels</span>
           {callLogs.length > 0 && (
             <span className="text-xs text-neutral-300 font-bold">
@@ -313,7 +320,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                 placeholder="Rechercher contact, téléphone ou message..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm text-neutral-100 placeholder-neutral-500 focus:outline-hidden focus:border-violet-500 transition-colors"
+                className="w-full pl-9 pr-3.5 py-2.5 bg-neutral-950 border border-neutral-800 rounded-2xl text-sm text-neutral-100 placeholder-neutral-500 focus:outline-hidden focus:border-teal-500 transition-colors"
               />
             </div>
 
@@ -324,7 +331,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                   onClick={() => setFilter('all')}
                   className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                     filter === 'all'
-                      ? 'bg-violet-600 text-white shadow-xs'
+                      ? 'bg-teal-600 text-white shadow-xs'
                       : 'bg-neutral-800/80 text-neutral-400 hover:text-neutral-200'
                   }`}
                 >
@@ -334,7 +341,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                   onClick={() => setFilter('unread')}
                   className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                     filter === 'unread'
-                      ? 'bg-violet-600 text-white shadow-xs'
+                      ? 'bg-teal-600 text-white shadow-xs'
                       : 'bg-neutral-800/80 text-neutral-400 hover:text-neutral-200'
                   }`}
                 >
@@ -344,7 +351,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                   onClick={() => setFilter('groups')}
                   className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                     filter === 'groups'
-                      ? 'bg-violet-600 text-white shadow-xs'
+                      ? 'bg-teal-600 text-white shadow-xs'
                       : 'bg-neutral-800/80 text-neutral-400 hover:text-neutral-200'
                   }`}
                 >
@@ -389,7 +396,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                   <div className="flex items-center gap-1.5 overflow-x-auto pt-1 scrollbar-none">
                     <button
                       onClick={handleBatchPin}
-                      className="px-2.5 py-1 bg-indigo-950/80 hover:bg-indigo-900 border border-indigo-800 text-indigo-300 rounded-lg text-[11px] font-bold flex items-center gap-1 shrink-0 transition"
+                      className="px-2.5 py-1 bg-teal-950/80 hover:bg-teal-900 border border-teal-800 text-teal-300 rounded-lg text-[11px] font-bold flex items-center gap-1 shrink-0 transition"
                       title="Épingler ou désépingler"
                     >
                       <Pin className="w-3 h-3" />
@@ -439,25 +446,29 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                   if (onSelectChat) onSelectChat();
                 }
               }}
-              className="p-3 mx-2 my-2 rounded-2xl bg-gradient-to-r from-violet-950/80 via-indigo-950/60 to-purple-950/80 border border-violet-700/50 hover:border-violet-400 cursor-pointer transition-all shadow-md group flex items-center justify-between"
+              className="p-3 mx-2 my-2 rounded-2xl bg-gradient-to-r from-teal-950/80 via-[#0d221d] to-[#122e27] border border-teal-700/60 hover:border-teal-400 cursor-pointer transition-all shadow-md group flex items-center justify-between"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-                  <Bot className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl overflow-hidden ring-1 ring-teal-400/80 flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform bg-[#0c1614]">
+                  <img 
+                    src="/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg" 
+                    alt="Robot Flex IA" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="truncate">
                   <div className="flex items-center gap-1.5">
                     <h4 className="text-xs font-black text-white">Flex IA Assistant</h4>
-                    <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/40">
+                    <span className="text-[9px] font-black px-1.5 py-0.2 rounded-full bg-teal-500/20 text-teal-300 border border-teal-500/40">
                       OFFICIEL
                     </span>
                   </div>
-                  <p className="text-[11px] text-neutral-400 truncate">
-                    Posez vos questions sur Franck Alex, Flex Online ou tout sujet !
+                  <p className="text-[11px] text-neutral-300 truncate">
+                    Sciences, Maths, Histoire, Médecine, Philo & Flex Online
                   </p>
                 </div>
               </div>
-              <span className="shrink-0 text-violet-300 text-xs font-bold px-2.5 py-1 rounded-xl bg-violet-900/60 group-hover:bg-violet-800 transition">
+              <span className="shrink-0 text-teal-200 text-xs font-bold px-2.5 py-1 rounded-xl bg-teal-900/60 group-hover:bg-teal-800 transition border border-teal-700/40">
                 ⚡ Discuter
               </span>
             </div>
@@ -475,15 +486,21 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
               </div>
             ) : (
               sortedConversations.map((conv) => {
-                const isGroup = conv.type === 'group';
-                const contact = !isGroup ? getDirectChatUser(conv) : undefined;
-                const title = isGroup ? conv.name : contact?.name || 'Contact';
-                const avatar = isGroup ? conv.avatar : contact?.avatar;
-                const isOnline = contact?.status === 'online';
+                const isAi = conv.id === 'conv-ai-assistant' || conv.id.startsWith('conv-ai-') || conv.participants.includes('user-flex-ai');
+                const isGroup = !isAi && conv.type === 'group';
+                const contact = isAi 
+                  ? (users.find((u) => u.id === 'user-flex-ai') || FLEX_AI) 
+                  : (!isGroup ? getDirectChatUser(conv) : undefined);
+                const title = isAi ? 'Flex IA Assistant' : (isGroup ? conv.name : contact?.name || 'Contact');
+                const avatar = isAi 
+                  ? '/src/assets/images/flex_ai_robot_avatar_1790413735699.jpg' 
+                  : (isGroup ? conv.avatar : contact?.avatar);
+                const isOnline = isAi ? true : contact?.status === 'online';
                 const unread = conv.unreadCount[currentUser.id] || 0;
                 const isSelected = selectedConversationId === conv.id;
                 const typingUsers = typingMap[conv.id] || [];
                 const isTyping = typingUsers.length > 0;
+                const isAiConvThinking = (isAi && Boolean(aiThinkingMap[conv.id])) || (isAi && isTyping);
 
                 const isPinned = pinnedConversationIds.includes(conv.id) || conv.pinned;
                 const isMuted = mutedConversationIds.includes(conv.id) || conv.muted;
@@ -504,9 +521,9 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                     }}
                     className={`p-3 sm:px-4 flex items-center gap-3 cursor-pointer transition-colors relative group ${
                       isSelected && !isSelectionMode
-                        ? 'bg-violet-950/40 border-l-4 border-violet-500 shadow-inner'
+                        ? 'bg-teal-950/40 border-l-4 border-teal-500 shadow-inner'
                         : isCheckedInSelection
-                        ? 'bg-violet-950/20'
+                        ? 'bg-teal-950/20'
                         : 'hover:bg-neutral-800/50'
                     }`}
                   >
@@ -514,10 +531,10 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                     {isSelectionMode && (
                       <div 
                         onClick={(e) => toggleSelectConv(conv.id, e)}
-                        className="shrink-0 text-violet-400 cursor-pointer"
+                        className="shrink-0 text-teal-400 cursor-pointer"
                       >
                         {isCheckedInSelection ? (
-                          <CheckSquare className="w-5 h-5 fill-violet-500 text-neutral-900" />
+                          <CheckSquare className="w-5 h-5 fill-teal-500 text-neutral-900" />
                         ) : (
                           <Square className="w-5 h-5 text-neutral-500 hover:text-neutral-300" />
                         )}
@@ -527,23 +544,25 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                     {/* Avatar with Status badge (Click to view full photo) */}
                     <div 
                       onClick={(e) => {
-                        if (contact) {
-                          e.stopPropagation();
+                        e.stopPropagation();
+                        if (isAi) {
+                          openProfilePhotoModal(FLEX_AI);
+                        } else if (contact) {
                           openProfilePhotoModal(contact);
                         }
                       }}
                       className="relative shrink-0 cursor-pointer group/avatar"
-                      title="Cliquer pour voir la photo en grand"
+                      title={isAi ? "Profil officiel de Flex IA" : "Cliquer pour voir la photo en grand"}
                     >
                       <img
                         src={avatar}
                         alt={title}
-                        className={`w-12 h-12 rounded-2xl object-cover ring-2 group-hover/avatar:ring-violet-400 transition-all ${
-                          isBlocked ? 'ring-rose-700 opacity-60 grayscale' : 'ring-neutral-700'
+                        className={`w-12 h-12 rounded-2xl object-cover ring-2 group-hover/avatar:ring-teal-400 transition-all ${
+                          isBlocked ? 'ring-rose-700 opacity-60 grayscale' : isAi ? 'ring-teal-400 shadow-md shadow-teal-950/50' : 'ring-neutral-700'
                         }`}
                       />
                       {isGroup ? (
-                        <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-lg bg-violet-600 text-white flex items-center justify-center ring-2 ring-neutral-900 shadow-xs">
+                        <span className="absolute -bottom-1 -right-1 w-5 h-5 rounded-lg bg-teal-600 text-white flex items-center justify-center ring-2 ring-neutral-900 shadow-xs">
                           <Users className="w-3 h-3" />
                         </span>
                       ) : (
@@ -552,7 +571,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                             isBlocked
                               ? 'bg-rose-500'
                               : isOnline
-                              ? 'bg-violet-400 shadow-xs shadow-violet-400/50'
+                              ? 'bg-teal-400 shadow-xs shadow-teal-400/50'
                               : 'bg-neutral-600'
                           }`}
                         />
@@ -569,13 +588,13 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                             {title}
                           </h3>
                           {contact?.id === 'user-flex-ai' && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-xs flex items-center gap-1 shrink-0">
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-gradient-to-r from-[#0F6E56] to-[#1D9E75] text-white shadow-xs flex items-center gap-1 shrink-0">
                               <Sparkles className="w-2.5 h-2.5 text-amber-300" />
                               <span>IA Officielle</span>
                             </span>
                           )}
                           {isPinned && (
-                            <Pin className="w-3.5 h-3.5 text-violet-400 fill-violet-400/30 shrink-0" />
+                            <Pin className="w-3.5 h-3.5 text-teal-400 fill-teal-400/30 shrink-0" />
                           )}
                           {isMuted && (
                             <BellOff className="w-3.5 h-3.5 text-amber-400 shrink-0" />
@@ -613,7 +632,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                                     }}
                                     className="w-full flex items-center gap-2 px-2.5 py-1.5 rounded-xl hover:bg-neutral-800 text-left font-medium"
                                   >
-                                    <Pin className="w-3.5 h-3.5 text-indigo-400" />
+                                    <Pin className="w-3.5 h-3.5 text-teal-400" />
                                     <span>{isPinned ? 'Désépingler' : 'Épingler'}</span>
                                   </button>
 
@@ -665,43 +684,56 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                       </div>
 
                       <div className="flex items-center justify-between gap-1">
-                        {isTyping ? (
-                          <p className="text-xs sm:text-sm text-violet-400 font-bold truncate animate-pulse flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
+                        {isAiConvThinking ? (
+                          <p className="text-xs sm:text-sm text-teal-300 font-bold truncate animate-pulse flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-ping" />
+                            <span className="px-1.5 py-0.2 rounded-md bg-teal-500/25 text-teal-300 border border-teal-500/40 text-[10px] font-black uppercase tracking-wide">Thinking...</span>
+                            <span className="text-neutral-300 font-medium">Recherche en cours</span>
+                          </p>
+                        ) : isTyping ? (
+                          <p className="text-xs sm:text-sm text-teal-400 font-bold truncate animate-pulse flex items-center gap-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
                             En train d'écrire...
                           </p>
                         ) : (
-                          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-neutral-300 truncate">
+                          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-neutral-300 min-w-0 flex-1">
                             {conv.lastMessage?.senderId === currentUser.id && (
                               <span className="text-neutral-400 shrink-0">
                                 {conv.lastMessage?.status === 'read' ? (
-                                  <CheckCheck className="w-4 h-4 text-violet-400 inline" />
+                                  <CheckCheck className="w-4 h-4 text-teal-400 inline" />
                                 ) : (
                                   <Check className="w-4 h-4 inline" />
                                 )}
                               </span>
                             )}
-                            {conv.lastMessage?.type === 'image' && (
-                              <span className="flex items-center gap-1 text-violet-300 font-semibold">
-                                <ImageIcon className="w-4 h-4 shrink-0" /> Photo
+                            {conv.lastMessage?.fileName ? (
+                              <span className="flex items-center gap-1 text-teal-300 font-medium truncate min-w-0">
+                                <FileText className="w-3.5 h-3.5 shrink-0 text-teal-400" />
+                                <span className="truncate">{conv.lastMessage.fileName}</span>
                               </span>
-                            )}
-                            {conv.lastMessage?.type === 'voice' && (
-                              <span className="flex items-center gap-1 text-violet-300 font-semibold">
-                                <Mic className="w-4 h-4 shrink-0" /> Message vocal
+                            ) : conv.lastMessage?.pollData ? (
+                              <span className="flex items-center gap-1 text-teal-300 font-medium truncate min-w-0">
+                                <BarChart2 className="w-3.5 h-3.5 shrink-0 text-teal-400" />
+                                <span className="truncate">Sondage : {conv.lastMessage.pollData.question}</span>
                               </span>
-                            )}
-                            {conv.lastMessage?.type === 'text' && (
-                              <span className="truncate">{conv.lastMessage.content}</span>
-                            )}
-                            {!conv.lastMessage && (
+                            ) : conv.lastMessage?.type === 'image' ? (
+                              <span className="flex items-center gap-1 text-teal-300 font-medium">
+                                <ImageIcon className="w-3.5 h-3.5 shrink-0" /> Photo
+                              </span>
+                            ) : conv.lastMessage?.type === 'voice' ? (
+                              <span className="flex items-center gap-1 text-teal-300 font-medium">
+                                <Mic className="w-3.5 h-3.5 shrink-0" /> Message vocal
+                              </span>
+                            ) : conv.lastMessage?.content ? (
+                              <span className="truncate min-w-0 block">{conv.lastMessage.content}</span>
+                            ) : (
                               <span className="italic text-neutral-500">Commencer la discussion</span>
                             )}
                           </div>
                         )}
 
                         {unread > 0 && (
-                          <span className="min-w-5 h-5 px-1.5 rounded-full bg-violet-600 text-white text-xs font-black flex items-center justify-center shrink-0 shadow-md shadow-violet-950/50">
+                          <span className="min-w-5 h-5 px-1.5 rounded-full bg-teal-600 text-white text-xs font-black flex items-center justify-center shrink-0 shadow-md shadow-teal-950/50">
                             {unread}
                           </span>
                         )}
@@ -734,7 +766,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
               <div className="relative shrink-0">
                 <div className={`w-13 h-13 rounded-full p-0.5 ${
                   myStories.length > 0
-                    ? 'bg-gradient-to-tr from-emerald-400 via-cyan-400 to-indigo-500'
+                    ? 'bg-gradient-to-tr from-[#0F6E56] via-teal-400 to-[#1D9E75]'
                     : 'bg-neutral-800'
                 }`}>
                   <img
@@ -797,7 +829,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
                       onClick={() => setSelectedStoryIndex(storyIdx)}
                       className="p-2.5 rounded-2xl bg-neutral-950/60 border border-neutral-800/80 hover:bg-neutral-800/50 cursor-pointer flex items-center gap-3 transition-colors"
                     >
-                      <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-emerald-400 via-cyan-400 to-indigo-500 shrink-0 shadow-xs">
+                      <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-tr from-[#0F6E56] via-teal-400 to-[#1D9E75] shrink-0 shadow-xs">
                         <img
                           src={story.authorAvatar}
                           alt={story.authorName}
@@ -826,7 +858,7 @@ export const ChatList: React.FC<ChatListProps> = ({ onSelectChat }) => {
             <h4 className="text-[11px] font-black uppercase tracking-wider text-neutral-400">
               Historique des appels récents
             </h4>
-            <span className="text-[11px] text-indigo-400 font-bold">Chiffré WebRTC</span>
+            <span className="text-[11px] text-teal-400 font-bold">Chiffré WebRTC</span>
           </div>
 
           {callLogs.length === 0 ? (

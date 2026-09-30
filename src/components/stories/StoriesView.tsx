@@ -46,9 +46,9 @@ export const StoriesView: React.FC = () => {
             <img
               src={currentUser.avatar}
               alt={currentUser.name}
-              className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/50"
+              className="w-14 h-14 rounded-2xl object-cover ring-2 ring-teal-500/50"
             />
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-lg bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center ring-2 ring-neutral-900 shadow-xs">
+            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-lg bg-gradient-to-tr from-[#0F6E56] to-[#1D9E75] text-white flex items-center justify-center ring-2 ring-neutral-900 shadow-xs">
               <Plus className="w-3.5 h-3.5" />
             </div>
           </div>

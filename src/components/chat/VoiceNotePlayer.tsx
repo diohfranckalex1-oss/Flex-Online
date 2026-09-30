@@ -10,8 +10,19 @@ interface VoiceNotePlayerProps {
 export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15, isSelf = false, mediaUrl }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [playbackRate, setPlaybackRate] = useState<number>(1);
   const intervalRef = useRef<any>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Cycle speed: 1x -> 1.5x -> 2x -> 1x
+  const cyclePlaybackRate = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const nextRate = playbackRate === 1 ? 1.5 : playbackRate === 1.5 ? 2 : 1;
+    setPlaybackRate(nextRate);
+    if (audioRef.current) {
+      audioRef.current.playbackRate = nextRate;
+    }
+  };
 
   // Generate deterministic wave heights
   const bars = [14, 22, 35, 18, 28, 40, 32, 20, 16, 38, 24, 18, 30, 42, 26, 15, 20, 36, 28, 16];
@@ -19,6 +30,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15,
   useEffect(() => {
     if (mediaUrl) {
       const audio = new Audio(mediaUrl);
+      audio.playbackRate = playbackRate;
       audioRef.current = audio;
 
       audio.ontimeupdate = () => {
@@ -40,6 +52,12 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15,
   }, [mediaUrl]);
 
   useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
+
+  useEffect(() => {
     if (!mediaUrl) {
       if (isPlaying) {
         intervalRef.current = setInterval(() => {
@@ -48,7 +66,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15,
               setIsPlaying(false);
               return 0;
             }
-            return prev + (100 / (duration * 10));
+            return prev + (100 / (duration * 10)) * playbackRate;
           });
         }, 100);
       } else {
@@ -58,7 +76,7 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15,
         if (intervalRef.current) clearInterval(intervalRef.current);
       };
     }
-  }, [isPlaying, duration, mediaUrl]);
+  }, [isPlaying, duration, mediaUrl, playbackRate]);
 
   const togglePlay = () => {
     if (mediaUrl && audioRef.current) {
@@ -90,8 +108,8 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15,
         onClick={togglePlay}
         className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-transform active:scale-95 shadow-md ${
           isSelf
-            ? 'bg-white text-emerald-900 shadow-black/20'
-            : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-emerald-950/40'
+            ? 'bg-white text-teal-950 shadow-black/20'
+            : 'bg-teal-600 hover:bg-teal-500 text-white shadow-teal-950/40'
         }`}
         aria-label={isPlaying ? 'Mettre en pause' : 'Écouter le message vocal'}
       >
@@ -111,8 +129,8 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15,
                 className={`w-1 rounded-full transition-all duration-150 ${
                   isPlayed
                     ? isSelf
-                      ? 'bg-emerald-200'
-                      : 'bg-emerald-400'
+                      ? 'bg-teal-200'
+                      : 'bg-teal-400'
                     : isSelf
                     ? 'bg-white/30'
                     : 'bg-neutral-700'
@@ -124,10 +142,28 @@ export const VoiceNotePlayer: React.FC<VoiceNotePlayerProps> = ({ duration = 15,
         </div>
 
         <div className="flex items-center justify-between text-[10px] mt-1 font-mono">
-          <span className={isSelf ? 'text-emerald-100' : 'text-neutral-400'}>
+          <span className={isSelf ? 'text-teal-100 font-bold' : 'text-neutral-300 font-bold'}>
             {formatTime(isPlaying ? currentSeconds : duration)}
           </span>
-          <Volume2 className={`w-3 h-3 ${isSelf ? 'text-emerald-100' : 'text-neutral-500'}`} />
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={cyclePlaybackRate}
+              className={`px-1.5 py-0.2 rounded-md font-bold text-[9px] transition active:scale-95 ${
+                playbackRate > 1
+                  ? isSelf
+                    ? 'bg-white text-teal-950 font-black'
+                    : 'bg-teal-500 text-white font-black'
+                  : isSelf
+                  ? 'bg-teal-950/60 text-teal-200 hover:bg-teal-900/80'
+                  : 'bg-neutral-800 text-neutral-300 hover:text-white'
+              }`}
+              title="Changer la vitesse d'écoute (1x / 1.5x / 2x)"
+            >
+              {playbackRate}x
+            </button>
+            <Volume2 className={`w-3 h-3 ${isSelf ? 'text-teal-200' : 'text-neutral-400'}`} />
+          </div>
         </div>
       </div>
     </div>

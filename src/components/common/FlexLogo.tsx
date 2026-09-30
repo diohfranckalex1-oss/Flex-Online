@@ -27,13 +27,13 @@ export const FlexLogo: React.FC<FlexLogoProps> = ({
 
   return (
     <div id="flex-online-logo" className={`flex items-center gap-2.5 select-none ${className}`}>
-      {/* Icon Badge: Royal Violet Flex Online Emblem */}
+      {/* Icon Badge: Deep Teal & Turquoise Flex Online Proprietary Emblem (#0F6E56 - #1D9E75) */}
       <div
-        className={`${iconDimensions} relative rounded-2xl bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-indigo-600 p-[1.5px] shadow-lg shadow-violet-600/35 flex items-center justify-center shrink-0 transition-transform hover:scale-105`}
+        className={`${iconDimensions} relative rounded-2xl bg-gradient-to-tr from-[#0F6E56] via-[#148366] to-[#1D9E75] p-[1.5px] shadow-lg shadow-teal-950/60 flex items-center justify-center shrink-0 transition-transform hover:scale-105`}
       >
-        <div className="w-full h-full bg-neutral-950 rounded-[14px] flex items-center justify-center p-1.5 relative overflow-hidden">
-          {/* Luminous violet glow */}
-          <div className="absolute inset-0 bg-gradient-to-br from-violet-600/40 via-fuchsia-600/20 to-transparent" />
+        <div className="w-full h-full bg-[#0d1815] rounded-[14px] flex items-center justify-center p-1.5 relative overflow-hidden">
+          {/* Luminous teal & dark emerald ambient glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#1D9E75]/30 via-[#0F6E56]/20 to-transparent" />
           
           <svg
             viewBox="0 0 36 36"
@@ -41,32 +41,51 @@ export const FlexLogo: React.FC<FlexLogoProps> = ({
             xmlns="http://www.w3.org/2000/svg"
             className="w-full h-full relative z-10"
           >
-            {/* Elegant F monogram with interlocking pulse ribbons */}
+            {/* Proprietary Cybernetic Robot Head & Interlocking F Shield */}
+            {/* Outer Armor Crest */}
             <path
-              d="M10 8C10 6.89543 10.8954 6 12 6H26C27.1046 6 28 6.89543 28 8C28 9.10457 27.1046 10 26 10H16V15H24C25.1046 15 26 15.8954 26 17C26 18.1046 25.1046 19 24 19H16V28C16 29.1046 15.1046 30 14 30C12.8954 30 12 29.1046 12 28V8Z"
-              fill="url(#flex-grad-f)"
+              d="M7 8C7 6.34315 8.34315 5 10 5H26C27.6569 5 29 6.34315 29 8V18C29 25 21 30.5 18 31.5C15 30.5 7 25 7 18V8Z"
+              stroke="url(#flex-teal-shield-grad)"
+              strokeWidth="1.75"
+              fill="#081411"
+              fillOpacity="0.8"
             />
-            {/* Dynamic Energy Wave Node */}
-            <circle cx="25.5" cy="25.5" r="3.5" fill="#a855f7" className="animate-pulse" />
+            {/* Futuristic Interlocking F Structure */}
             <path
-              d="M19 25.5C19 22 22 19 25.5 19"
-              stroke="#c084fc"
-              strokeWidth="2.5"
-              strokeLinecap="round"
+              d="M12 9.5H24C24.8284 9.5 25.5 10.1716 25.5 11C25.5 11.8284 24.8284 12.5 24 12.5H15V16H22C22.8284 16 23.5 16.6716 23.5 17.5C23.5 18.3284 22.8284 19 22 19H15V26C15 26.8284 14.3284 27.5 13.5 27.5C12.6716 27.5 12 26.8284 12 26V9.5Z"
+              fill="url(#flex-teal-grad)"
             />
+            {/* Robotic Optical Visor Eye (Cyber Core) */}
+            <rect
+              x="17"
+              y="20.5"
+              width="8"
+              height="3"
+              rx="1.5"
+              fill="#5eead4"
+              className="animate-pulse"
+            />
+            <circle cx="21" cy="22" r="1" fill="#ffffff" />
+
             <defs>
-              <linearGradient id="flex-grad-f" x1="10" y1="6" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+              <linearGradient id="flex-teal-shield-grad" x1="7" y1="5" x2="29" y2="31.5" gradientUnits="userSpaceOnUse">
+                <stop stopColor="#1D9E75" />
+                <stop offset="0.5" stopColor="#5eead4" />
+                <stop offset="1" stopColor="#0F6E56" />
+              </linearGradient>
+              <linearGradient id="flex-teal-grad" x1="12" y1="9.5" x2="25.5" y2="27.5" gradientUnits="userSpaceOnUse">
                 <stop stopColor="#ffffff" />
-                <stop offset="0.5" stopColor="#e9d5ff" />
-                <stop offset="1" stopColor="#a855f7" />
+                <stop offset="0.4" stopColor="#a7f3d0" />
+                <stop offset="0.8" stopColor="#1D9E75" />
+                <stop offset="1" stopColor="#0F6E56" />
               </linearGradient>
             </defs>
           </svg>
         </div>
 
         {/* Live Status Pulse Beacon */}
-        <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-violet-400 border-2 border-neutral-900 shadow-xs animate-ping opacity-75" />
-        <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-violet-500 border-2 border-neutral-900 shadow-xs" />
+        <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-teal-400 border-2 border-[#0d1815] shadow-xs animate-ping opacity-75" />
+        <span className="absolute -top-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#1D9E75] border-2 border-[#0d1815] shadow-xs" />
       </div>
 
       {/* Brand Wordmark */}
@@ -77,13 +96,13 @@ export const FlexLogo: React.FC<FlexLogoProps> = ({
               Flex
             </span>
             <span
-              className={`font-black ${textSizes} tracking-tight bg-gradient-to-r from-violet-400 via-fuchsia-400 to-purple-300 bg-clip-text text-transparent`}
+              className={`font-black ${textSizes} tracking-tight bg-gradient-to-r from-teal-300 via-[#1D9E75] to-emerald-400 bg-clip-text text-transparent`}
             >
               Online
             </span>
           </div>
-          <span className="text-[9px] font-bold text-violet-300/80 tracking-widest uppercase mt-0.5 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 inline-block animate-pulse" />
+          <span className="text-[9px] font-bold text-teal-300/80 tracking-widest uppercase mt-0.5 flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-teal-400 inline-block animate-pulse" />
             Réseau Officiel 5 Étoiles
           </span>
         </div>

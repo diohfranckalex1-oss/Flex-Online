@@ -10,12 +10,17 @@ import { CallModal } from './components/calls/CallModal';
 import { AuthModal } from './components/auth/AuthModal';
 import { RegistrationGate } from './components/auth/RegistrationGate';
 import { SmsNotificationToast } from './components/auth/SmsNotificationToast';
+import { IncomingMessageToast } from './components/common/IncomingMessageToast';
 import { ProfilePhotoModal } from './components/profile/ProfilePhotoModal';
 import { SettingsModal } from './components/settings/SettingsModal';
 import { LinkedDevicesModal } from './components/devices/LinkedDevicesModal';
 import { PhoneBackupModal } from './components/security/PhoneBackupModal';
 import { ContactsSyncModal } from './components/contacts/ContactsSyncModal';
 import { OfflineIndicator } from './components/pwa/OfflineIndicator';
+import { DiscussionsLockGate } from './components/security/DiscussionsLockGate';
+import { FlexAiModal } from './components/ai/FlexAiModal';
+import { HiFlexView } from './components/hiflex/HiFlexView';
+import { FlexLibraryView } from './components/library/FlexLibraryView';
 
 const MainContent: React.FC = () => {
   const { 
@@ -46,7 +51,7 @@ const MainContent: React.FC = () => {
   return (
     <div className="flex-1 min-h-0 flex flex-col h-full overflow-hidden bg-neutral-950">
       {activeTab === 'chats' && (
-        <div className="flex-1 min-h-0 flex overflow-hidden max-w-7xl mx-auto w-full bg-neutral-900 border-x border-violet-950/40 shadow-2xl">
+        <div className="flex-1 min-h-0 flex overflow-hidden max-w-7xl mx-auto w-full bg-neutral-900 border-x border-teal-950/60 shadow-2xl">
           {/* Chat List: visible on desktop or on mobile when not viewing chat */}
           <div
             className={`w-full md:w-80 lg:w-96 shrink-0 h-full min-h-0 ${
@@ -70,6 +75,8 @@ const MainContent: React.FC = () => {
       {activeTab === 'feed' && <FeedView />}
       {activeTab === 'stories' && <StoriesView />}
       {activeTab === 'calls' && <CallsView />}
+      {activeTab === 'hiflex' && <HiFlexView />}
+      {activeTab === 'library' && <FlexLibraryView />}
 
       {/* Global Call Modal */}
       <CallModal />
@@ -79,6 +86,9 @@ const MainContent: React.FC = () => {
 
       {/* Real-time SMS / OTP Code Toast Notification */}
       <SmsNotificationToast />
+
+      {/* Real-time Smartphone Incoming Message Notification Banner Toast */}
+      <IncomingMessageToast />
 
       {/* Global Authentication / SIM Verification / Recovery Modal */}
       <AuthModal
@@ -117,7 +127,7 @@ const MainContent: React.FC = () => {
 };
 
 const AppShell: React.FC = () => {
-  const { isAuthenticated } = useApp();
+  const { isAuthenticated, isDiscussionsLocked, isAiModalOpen, setIsAiModalOpen } = useApp();
 
   // If user is not yet registered or authenticated, enforce the Registration & Verification Gate
   if (!isAuthenticated) {
@@ -131,11 +141,18 @@ const AppShell: React.FC = () => {
   }
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] flex flex-col bg-neutral-950 font-sans text-neutral-100 selection:bg-violet-600 selection:text-white overflow-hidden">
+    <div className="h-[100dvh] max-h-[100dvh] flex flex-col bg-neutral-950 font-sans text-neutral-100 selection:bg-teal-600 selection:text-white overflow-hidden relative">
       <Header />
       <main className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <MainContent />
       </main>
+      {/* 4-digit PIN Discussions Security Lock Screen */}
+      {isDiscussionsLocked && <DiscussionsLockGate />}
+      {/* Flex IA Universal Assistant Full Modal Window */}
+      <FlexAiModal
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+      />
     </div>
   );
 };

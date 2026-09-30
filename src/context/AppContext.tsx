@@ -11,7 +11,10 @@ import {
   PostReactionType,
   PhoneContact,
   ThemeMode,
-  ChatWallpaper
+  ChatWallpaper,
+  FontFamilyPreference,
+  PollData,
+  PollOption
 } from '../types';
 import { 
   AVAILABLE_USERS, 
@@ -23,7 +26,8 @@ import {
 } from '../data/initialData';
 import { checkContentModeration, ModerationResult } from '../utils/moderationFilter';
 import { DEFAULT_WALLPAPERS, DEFAULT_DARK_WALLPAPER, DEFAULT_LIGHT_WALLPAPER } from '../utils/wallpaperPresets';
-import { playNotificationSound } from '../utils/callSounds';
+import { callSounds, playNotificationSound } from '../utils/callSounds';
+import { getTranslation } from '../utils/i18n';
 
 interface AppContextType {
   currentUser: User;
@@ -31,8 +35,11 @@ interface AppContextType {
   setIsAuthenticated: (auth: boolean) => void;
   logoutUser: () => void;
   users: User[];
-  activeTab: 'chats' | 'feed' | 'stories' | 'calls';
-  setActiveTab: (tab: 'chats' | 'feed' | 'stories' | 'calls') => void;
+  activeTab: 'chats' | 'feed' | 'stories' | 'calls' | 'hiflex' | 'library';
+  setActiveTab: (tab: 'chats' | 'feed' | 'stories' | 'calls' | 'hiflex' | 'library') => void;
+  language: string;
+  setLanguage: (lang: string) => void;
+  t: (key: string, fallback?: string) => string;
   conversations: Conversation[];
   selectedConversationId: string | null;
   setSelectedConversationId: (id: string | null) => void;
@@ -45,6 +52,10 @@ interface AppContextType {
   activeCall: CallSession | null;
   wsConnected: boolean;
   typingMap: Record<string, string[]>;
+  aiThinkingMap: Record<string, boolean>;
+  setAiThinkingForConv: (convId: string, isThinking: boolean) => void;
+  incomingMessageToast: { id: string; conversationId: string; senderName: string; senderAvatar: string; content: string } | null;
+  clearIncomingMessageToast: () => void;
   isAuthModalOpen: boolean;
   setIsAuthModalOpen: (open: boolean) => void;
   isSecurityModalOpen: boolean;
@@ -55,6 +66,8 @@ interface AppContextType {
   setIsSettingsModalOpen: (open: boolean) => void;
   isLinkedDevicesModalOpen: boolean;
   setIsLinkedDevicesModalOpen: (open: boolean) => void;
+  isAiModalOpen: boolean;
+  setIsAiModalOpen: (open: boolean) => void;
   // Profile Photo Lightbox Modal
   isProfilePhotoModalOpen: boolean;
   profilePhotoModalUser: User | null;
@@ -109,6 +122,7 @@ interface AppContextType {
     phone?: string;
     email?: string;
     securityPin?: string;
+    interests?: string[];
   }) => void;
   loginUser: (identifier: string, pin?: string, recoveryKey?: string) => Promise<{ success: boolean; error?: string }>;
   updateSecurityPin: (newPin: string) => void;
@@ -119,7 +133,20 @@ interface AppContextType {
     mediaUrl?: string;
     voiceDuration?: number;
     replyToId?: string;
+    viewOnce?: boolean;
+    pollData?: PollData;
+    ephemeralHours?: number;
+    fileName?: string;
+    fileSize?: string;
+    isStarred?: boolean;
   }) => void;
+  votePoll: (messageId: string, optionId: string) => void;
+  createPollMessage: (conversationId: string, question: string, options: string[]) => void;
+  translateMessage: (messageId: string, targetLang?: string) => Promise<string | null>;
+  markViewOnceOpened: (messageId: string) => void;
+  toggleStarMessage: (messageId: string) => void;
+  fontFamily: FontFamilyPreference;
+  setFontFamily: (family: FontFamilyPreference) => void;
   toggleMessageReaction: (messageId: string, emoji: string) => void;
   markConversationAsRead: (conversationId: string) => void;
   sendTypingStatus: (conversationId: string, isTyping: boolean) => void;
@@ -151,6 +178,9 @@ interface AppContextType {
   uploadCustomWallpaper: (file: File) => Promise<void>;
   resetChatWallpaper: () => void;
   playNotificationSound: () => void;
+  isDiscussionsLocked: boolean;
+  lockDiscussions: () => void;
+  unlockDiscussions: (pin: string) => boolean;
 }
 
 const AppContext = createContext<AppContextType | null>(null);
@@ -161,7 +191,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       const saved = localStorage.getItem('flex_online_current_user');
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed) {
+          if (parsed.avatar && parsed.avatar.includes('534528741775')) {
+            parsed.avatar = AVAILABLE_USERS[0].avatar;
+          }
+          if (!parsed.interests || !Array.isArray(parsed.interests) || parsed.interests.length === 0) {
+            parsed.interests = [
+              '📚 Littérature & Écriture',
+              '💻 Informatique & Technologies',
+              '🤝 Partage & Amitié',
+              '🏛️ Histoire & Philosophie',
+              '🚀 Innovation & Entrepreneuriat'
+            ];
+          }
+          try {
+            localStorage.setItem('flex_online_current_user', JSON.stringify(parsed));
+          } catch {}
+          return parsed;
+        }
       }
     } catch (e) {
       console.warn('Could not read localStorage user', e);
@@ -200,7 +248,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     } catch (e) {}
   };
   const [users, setUsers] = useState<User[]>(AVAILABLE_USERS);
-  const [activeTab, setActiveTab] = useState<'chats' | 'feed' | 'stories' | 'calls'>('chats');
+  const [activeTab, setActiveTab] = useState<'chats' | 'feed' | 'stories' | 'calls' | 'hiflex' | 'library'>('chats');
+  const [language, setLanguageState] = useState<string>(() => {
+    try {
+      return localStorage.getItem('flex_app_language') || 'fr';
+    } catch {
+      return 'fr';
+    }
+  });
+
+  const setLanguage = (lang: string) => {
+    setLanguageState(lang);
+    try {
+      localStorage.setItem('flex_app_language', lang);
+    } catch {}
+  };
+
+  const t = useCallback((key: string, fallback?: string): string => {
+    return getTranslation(language, key, fallback);
+  }, [language]);
   const [conversations, setConversations] = useState<Conversation[]>(INITIAL_CONVERSATIONS);
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(INITIAL_CONVERSATIONS[0].id);
   const [messages, setMessages] = useState<Message[]>(getInitialMessages);
@@ -210,9 +276,62 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [activeCall, setActiveCall] = useState<CallSession | null>(null);
   const [wsConnected, setWsConnected] = useState<boolean>(false);
   const [typingMap, setTypingMap] = useState<Record<string, string[]>>({});
+  const [aiThinkingMap, setAiThinkingMap] = useState<Record<string, boolean>>({});
+  const [incomingMessageToast, setIncomingMessageToast] = useState<{
+    id: string;
+    conversationId: string;
+    senderName: string;
+    senderAvatar: string;
+    content: string;
+  } | null>(null);
+
+  const clearIncomingMessageToast = useCallback(() => {
+    setIncomingMessageToast(null);
+  }, []);
+
+  const setAiThinkingForConv = useCallback((convId: string, isThinking: boolean) => {
+    setAiThinkingMap((prev) => ({ ...prev, [convId]: isThinking }));
+  }, []);
+
+  const selectedConversationIdRef = useRef<string | null>(selectedConversationId);
+  useEffect(() => {
+    selectedConversationIdRef.current = selectedConversationId;
+  }, [selectedConversationId]);
+
+  const currentUserRef = useRef<User>(currentUser);
+  useEffect(() => {
+    currentUserRef.current = currentUser;
+  }, [currentUser]);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [isSecurityModalOpen, setIsSecurityModalOpen] = useState<boolean>(false);
   const [isContactsSyncModalOpen, setIsContactsSyncModalOpen] = useState<boolean>(false);
+  const [isDiscussionsLocked, setIsDiscussionsLocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('flex_discussions_locked') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const lockDiscussions = () => {
+    setIsDiscussionsLocked(true);
+    try {
+      sessionStorage.setItem('flex_discussions_locked', 'true');
+    } catch {}
+  };
+
+  const unlockDiscussions = (pin: string): boolean => {
+    const validPin = currentUser.securityPin || '1234';
+    if (pin.trim() === validPin.trim()) {
+      setIsDiscussionsLocked(false);
+      try {
+        sessionStorage.removeItem('flex_discussions_locked');
+      } catch {}
+      playNotificationSound();
+      return true;
+    }
+    return false;
+  };
 
   // Phone Contacts state (stored in localStorage per user)
   const getInitialPhoneContacts = (): PhoneContact[] => {
@@ -242,6 +361,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [phoneContacts, setPhoneContacts] = useState<PhoneContact[]>(getInitialPhoneContacts);
   const [isSettingsModalOpen, setIsSettingsModalOpen] = useState<boolean>(false);
   const [isLinkedDevicesModalOpen, setIsLinkedDevicesModalOpen] = useState<boolean>(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState<boolean>(false);
 
   // Font size preference (normal | large | xlarge) - default 'large' so no need to zoom!
   const [fontSize, setFontSizeState] = useState<'normal' | 'large' | 'xlarge'>(() => {
@@ -259,6 +379,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       localStorage.setItem('flex_font_size', size);
     } catch {}
   };
+
+  // Font family / Caractère des écritures ('system' | 'poppins' | 'rounded' | 'serif' | 'mono')
+  const [fontFamily, setFontFamilyState] = useState<FontFamilyPreference>(() => {
+    try {
+      const saved = localStorage.getItem('flex_font_family');
+      if (saved && ['system', 'poppins', 'rounded', 'serif', 'mono'].includes(saved)) {
+        return saved as FontFamilyPreference;
+      }
+      return 'poppins';
+    } catch {
+      return 'poppins';
+    }
+  });
+
+  const setFontFamily = (family: FontFamilyPreference) => {
+    setFontFamilyState(family);
+    try {
+      localStorage.setItem('flex_font_family', family);
+    } catch {}
+    document.documentElement.setAttribute('data-font-family', family);
+  };
+
+  // Sync font family on load
+  useEffect(() => {
+    document.documentElement.setAttribute('data-font-family', fontFamily);
+  }, [fontFamily]);
 
   // Theme Mode: 'dark' (noir) | 'light' (blanc)
   const [themeMode, setThemeModeState] = useState<ThemeMode>(() => {
@@ -847,8 +993,39 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
             case 'chat:message_received': {
               const { message, conversation } = data;
-              if (message && message.senderId !== currentUser.id) {
-                playNotificationSound();
+              if (message) {
+                if (message.senderId === 'user-flex-ai') {
+                  setAiThinkingMap((prev) => ({
+                    ...prev,
+                    [message.conversationId]: false,
+                  }));
+                }
+
+                if (message.senderId !== currentUserRef.current.id) {
+                  // Sonnerie de message pour téléphone et vibreur
+                  playNotificationSound();
+
+                  // Native browser / smartphone notification if enabled
+                  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                    try {
+                      new Notification(message.senderName || 'Flex Online', {
+                        body: message.type === 'text' ? message.content : 'Nouveau média reçu',
+                        icon: message.senderAvatar || '/flex_ai_robot_avatar.jpg',
+                      });
+                    } catch (e) {}
+                  }
+
+                  // Floating notification toast if user is elsewhere or in another conversation
+                  if (message.conversationId !== selectedConversationIdRef.current) {
+                    setIncomingMessageToast({
+                      id: message.id,
+                      conversationId: message.conversationId,
+                      senderName: message.senderName || (message.senderId === 'user-flex-ai' ? 'Flex IA Assistant' : 'Nouveau message'),
+                      senderAvatar: message.senderAvatar || '/flex_ai_robot_avatar.jpg',
+                      content: message.type === 'text' ? message.content : 'Fichier partagé 📎',
+                    });
+                  }
+                }
               }
               setMessages((prev) => {
                 const existingIndex = prev.findIndex((m) => m.id === message.id);
@@ -894,6 +1071,30 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               break;
             }
 
+            case 'poll:updated': {
+              const { messageId, pollData } = data;
+              setMessages((prev) =>
+                prev.map((m) => (m.id === messageId ? { ...m, pollData } : m))
+              );
+              break;
+            }
+
+            case 'chat:view_once_updated': {
+              const { messageId } = data;
+              setMessages((prev) =>
+                prev.map((m) => (m.id === messageId ? { ...m, viewed: true } : m))
+              );
+              break;
+            }
+
+            case 'chat:starred_updated': {
+              const { messageId, isStarred } = data;
+              setMessages((prev) =>
+                prev.map((m) => (m.id === messageId ? { ...m, isStarred } : m))
+              );
+              break;
+            }
+
             case 'chat:read_status': {
               const { conversationId, userId } = data;
               setConversations((prev) =>
@@ -914,15 +1115,25 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             }
 
             case 'chat:user_typing': {
-              const { conversationId, userName, isTyping } = data;
+              const { conversationId, userName, senderId, isTyping, isThinking } = data;
+              const isAi = senderId === 'user-flex-ai' || userName === 'Flex IA Assistant';
+
+              if (isAi) {
+                setAiThinkingMap((prev) => ({
+                  ...prev,
+                  [conversationId]: Boolean(isTyping || isThinking),
+                }));
+              }
+
               setTypingMap((prev) => {
                 const current = prev[conversationId] || [];
+                const displayName = userName || (isAi ? 'Flex IA Assistant' : 'Contact');
                 if (isTyping) {
-                  if (!current.includes(userName)) {
-                    return { ...prev, [conversationId]: [...current, userName] };
+                  if (!current.includes(displayName)) {
+                    return { ...prev, [conversationId]: [...current, displayName] };
                   }
                 } else {
-                  return { ...prev, [conversationId]: current.filter((u) => u !== userName) };
+                  return { ...prev, [conversationId]: current.filter((u) => u !== displayName) };
                 }
                 return prev;
               });
@@ -1012,11 +1223,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             }
 
             case 'call:signaled': {
-              if (data.recipientId === currentUser.id && data.status === 'ringing') {
+              const myCurrentId = currentUserRef.current.id;
+              if (data.recipientId === myCurrentId && data.status === 'ringing') {
                 setActiveCall({
                   id: data.id,
                   caller: data.caller,
-                  recipient: currentUser,
+                  recipient: currentUserRef.current,
                   type: data.type,
                   status: 'ringing',
                   startedAt: new Date().toISOString(),
@@ -1024,6 +1236,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
               } else if (data.status === 'connected') {
                 setActiveCall((prev) => (prev ? { ...prev, status: 'connected' } : null));
               } else if (data.status === 'ended') {
+                callSounds.stopAll();
+                callSounds.playEndedTone();
                 setActiveCall(null);
               }
               break;
@@ -1067,9 +1281,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     phone?: string;
     email?: string;
     securityPin?: string;
+    interests?: string[];
   }) => {
     const cleanUsername = (data.username || (data.firstName ? `${data.firstName.toLowerCase()}_${(data.lastName || '').toLowerCase()}` : data.name.toLowerCase().replace(/\s+/g, '_'))).trim().replace(/[^a-zA-Z0-9_]/g, '');
-    const avatarUrl = data.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername || 'flex_user'}`;
+    const avatarUrl = data.avatar || `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=400&q=80`;
     const newUser: User = {
       id: `user-${Date.now()}`,
       name: data.name.trim(),
@@ -1079,9 +1294,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       countryCode: data.countryCode || '+225',
       username: cleanUsername,
       avatar: avatarUrl,
-      bio: data.bio || `Membre officiel Flex Online (${data.country || 'International'}) 👋`,
+      bio: data.bio || `Membre officiel Flex Online (${data.country || 'International'}) • Vrai Humain 👋`,
       phone: data.phone || '+225 00 00 00 00',
       email: data.email?.trim(),
+      interests: data.interests && data.interests.length > 0 ? data.interests : ['Lecture', 'Échanges culturels', 'Flex Online'],
       status: 'online',
       verified: true,
       securityPin: data.securityPin || '1234',
@@ -1095,6 +1311,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     try {
       localStorage.setItem('flex_online_current_user', JSON.stringify(newUser));
       localStorage.setItem('flex_online_authenticated', 'true');
+      
+      // Direct and immediate admission to Hi Flex for every newly registered person!
+      const existingAdmittedRaw = localStorage.getItem('flex_hiflex_admitted_members');
+      const existingAdmitted = existingAdmittedRaw ? JSON.parse(existingAdmittedRaw) : [];
+      const updatedAdmitted = [newUser, ...existingAdmitted.filter((u: any) => u.id !== newUser.id)];
+      localStorage.setItem('flex_hiflex_admitted_members', JSON.stringify(updatedAdmitted));
     } catch (e) {}
 
     sendWsMessage('user:register', { ...data, id: newUser.id, username: cleanUsername, avatar: avatarUrl });
@@ -1122,19 +1344,27 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       });
 
       if (localFound) {
-        const pinValid = !localFound.securityPin || localFound.securityPin === pin;
+        if (!pin && !recoveryKey) {
+          resolve({ success: false, error: 'Le mot de passe de sécurité à 4 chiffres est obligatoire pour vous connecter.' });
+          return;
+        }
+
+        const validPin = localFound.securityPin || '1234';
+        const pinValid = Boolean(pin && pin.trim() === validPin.trim());
         const recValid = Boolean(recoveryKey && localFound.recoveryKey && localFound.recoveryKey.trim().toUpperCase() === recoveryKey.trim().toUpperCase());
 
-        if (pin && !pinValid && !recValid) {
-          resolve({ success: false, error: 'Code PIN de sécurité incorrect.' });
+        if (!pinValid && !recValid) {
+          resolve({ success: false, error: 'Mot de passe à 4 chiffres incorrect. Vérifiez vos chiffres.' });
           return;
         }
 
         setCurrentUser(localFound);
         setIsAuthenticated(true);
+        setIsDiscussionsLocked(false);
         try {
           localStorage.setItem('flex_online_current_user', JSON.stringify(localFound));
           localStorage.setItem('flex_online_authenticated', 'true');
+          sessionStorage.removeItem('flex_discussions_locked');
         } catch (e) {}
       }
 
@@ -1199,6 +1429,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     mediaUrl,
     voiceDuration,
     replyToId,
+    viewOnce = false,
+    pollData,
+    ephemeralHours,
+    fileName,
+    fileSize,
+    isStarred = false,
   }: {
     conversationId: string;
     content: string;
@@ -1206,6 +1442,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     mediaUrl?: string;
     voiceDuration?: number;
     replyToId?: string;
+    viewOnce?: boolean;
+    pollData?: PollData;
+    ephemeralHours?: number;
+    fileName?: string;
+    fileSize?: string;
+    isStarred?: boolean;
   }) => {
     // Bouclier de Modération Automatique de Pudeur et Respect
     if (type === 'text' && content) {
@@ -1230,6 +1472,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       mediaUrl,
       voiceDuration,
       replyToId,
+      fileName,
+      fileSize,
+      isStarred: Boolean(isStarred),
+      viewOnce: Boolean(viewOnce),
+      viewed: false,
+      pollData,
+      ephemeralHours,
       timestamp: nowIso,
     };
 
@@ -1238,6 +1487,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       status: 'sent',
       reactions: [],
     };
+
+    // Instant local Thinking... status when addressing Flex IA
+    const isAiTarget = conversationId === 'conv-ai-assistant' || 
+                       (content && (content.toLowerCase().includes('@ia') || content.toLowerCase().includes('@flex')));
+    if (isAiTarget) {
+      setAiThinkingMap((prev) => ({ ...prev, [conversationId]: true }));
+    }
 
     setMessages((prev) => {
       if (prev.some((m) => m.id === messageId)) return prev;
@@ -1273,56 +1529,108 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         )
       );
     }, 450);
+  };
 
-    // Fallback simulation when WebSocket is disconnected (e.g. testing directly on static hosts)
-    if (!wsConnected) {
-      setTimeout(() => {
-        const conv = conversations.find((c) => c.id === conversationId);
-        if (!conv) return;
-        const otherParticipantId = conv.participants.find((p) => p !== currentUser.id);
-        const otherUser = users.find((u) => u.id === otherParticipantId);
-        if (!otherUser) return;
-
-        const friendlyReplies = [
-          'Bien reçu ! Tout fonctionne parfaitement sur Flex.',
-          'Super ! Je viens de voir ton message.',
-          'Parfait, la mise à jour est top !',
-          'Merci beaucoup Franck !',
-        ];
-        const replyText = friendlyReplies[Math.floor(Math.random() * friendlyReplies.length)];
-        const replyMsgId = `reply-${Date.now()}`;
-        const autoReply: Message = {
-          id: replyMsgId,
-          conversationId,
-          senderId: otherUser.id,
-          senderName: otherUser.name,
-          senderAvatar: otherUser.avatar,
-          content: replyText,
-          type: 'text',
-          timestamp: new Date().toISOString(),
-          status: 'delivered',
-          reactions: [],
+  const votePoll = (messageId: string, optionId: string) => {
+    setMessages((prev) =>
+      prev.map((m) => {
+        if (m.id !== messageId || !m.pollData) return m;
+        const newOptions = m.pollData.options.map((opt) => {
+          const idx = opt.voters.indexOf(currentUser.id);
+          if (opt.id === optionId) {
+            return {
+              ...opt,
+              voters: idx === -1 ? [...opt.voters, currentUser.id] : opt.voters.filter((id) => id !== currentUser.id),
+            };
+          }
+          return {
+            ...opt,
+            voters: opt.voters.filter((id) => id !== currentUser.id),
+          };
+        });
+        const total = newOptions.reduce((acc, o) => acc + o.voters.length, 0);
+        return {
+          ...m,
+          pollData: {
+            ...m.pollData,
+            options: newOptions,
+            totalVotes: total,
+          },
         };
+      })
+    );
+    sendWsMessage('poll:vote', { messageId, optionId, userId: currentUser.id });
+  };
 
-        setMessages((prev) => [...prev, autoReply]);
-        setConversations((prev) =>
-          prev.map((c) =>
-            c.id === conversationId
-              ? {
-                  ...c,
-                  lastMessage: autoReply,
-                  updatedAt: autoReply.timestamp,
-                  unreadCount: {
-                    ...(c.unreadCount || {}),
-                    [currentUser.id]: ((c.unreadCount && c.unreadCount[currentUser.id]) || 0) + 1,
-                  },
-                }
-              : c
-          )
-        );
-        playNotificationSound();
-      }, 2500);
+  const createPollMessage = (conversationId: string, question: string, optionTexts: string[]) => {
+    const validOptions: PollOption[] = optionTexts
+      .map((t, idx) => ({ id: `opt-${idx}-${Date.now()}`, text: t.trim(), voters: [] }))
+      .filter((o) => o.text.length > 0);
+
+    if (validOptions.length < 2) return;
+
+    const pollData: PollData = {
+      question: question.trim(),
+      options: validOptions,
+      totalVotes: 0,
+      closed: false,
+    };
+
+    sendMessage({
+      conversationId,
+      content: `📊 Sondage : ${question}`,
+      type: 'poll',
+      pollData,
+    });
+  };
+
+  const markViewOnceOpened = (messageId: string) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === messageId ? { ...m, viewed: true } : m))
+    );
+    sendWsMessage('chat:view_once_opened', { messageId });
+  };
+
+  const toggleStarMessage = (messageId: string) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === messageId ? { ...m, isStarred: !m.isStarred } : m))
+    );
+    sendWsMessage('chat:toggle_starred', { messageId });
+  };
+
+  const translateMessage = async (messageId: string, targetLang: string = 'fr'): Promise<string | null> => {
+    const msg = messages.find((m) => m.id === messageId);
+    if (!msg || !msg.content) return null;
+
+    try {
+      const res = await fetch('/api/ai/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: msg.content, targetLang }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.translation) {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === messageId
+                ? {
+                    ...m,
+                    translation: {
+                      text: data.translation,
+                      targetLang,
+                    },
+                  }
+                : m
+            )
+          );
+          return data.translation;
+        }
+      }
+    } catch (e) {
+      console.error('Failed to translate message:', e);
     }
+    return null;
   };
 
   const toggleMessageReaction = (messageId: string, emoji: string) => {
@@ -1864,6 +2172,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         users,
         activeTab,
         setActiveTab,
+        language,
+        setLanguage,
+        t,
         conversations,
         selectedConversationId,
         setSelectedConversationId,
@@ -1876,6 +2187,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         activeCall,
         wsConnected,
         typingMap,
+        aiThinkingMap,
+        setAiThinkingForConv,
+        incomingMessageToast,
+        clearIncomingMessageToast,
         isAuthModalOpen,
         setIsAuthModalOpen,
         isSecurityModalOpen,
@@ -1952,6 +2267,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         uploadCustomWallpaper,
         resetChatWallpaper,
         playNotificationSound,
+        fontFamily,
+        setFontFamily,
+        votePoll,
+        createPollMessage,
+        translateMessage,
+        markViewOnceOpened,
+        toggleStarMessage,
+        isDiscussionsLocked,
+        lockDiscussions,
+        unlockDiscussions,
+        isAiModalOpen,
+        setIsAiModalOpen,
       }}
     >
       {children}
